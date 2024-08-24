@@ -196,88 +196,83 @@ function getPokemonArray(pokemonJsonArray: PokemonJson[]): Pokemon[] {
 
 const indexedDB = window.indexedDB;
 
-const request = indexedDB.open('pokedex', 3);
+export function initDB(allPokemonMap: Map<string, Pokemon>): Promise<void> {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('pokedex', 3);
 
-request.onerror = (event) => {
-    console.error('Database error:', event);
-};
+        request.onerror = (event) => {
+            console.error('Database error:', event);
+            reject(event);
+        };
 
-request.onupgradeneeded = (event) => {
-    console.warn('Database upgrade needed:', event);
-    const db = request.result;
+        request.onupgradeneeded = (event) => {
+            const db = request.result;
+            if (db.objectStoreNames.contains('pokemon')) {
+                db.deleteObjectStore('pokemon');
+            }
+            const store = db.createObjectStore('pokemon', { keyPath: 'formId' });
+            store.createIndex("id", "id", { unique: false });
+            store.createIndex("name", "name", { unique: false });
+            store.createIndex("type1", "type1", { unique: false });
+            store.createIndex("type2", "type2", { unique: false });
+            store.createIndex("generation", "generation", { unique: false });
+            store.createIndex("dexNr", "dexNr", { unique: false });
+        };
 
-    if (db.objectStoreNames.contains('pokemon')) {
-        db.deleteObjectStore('pokemon');
-    }
+        request.onsuccess = (event) => {
+            const db = request.result;
+            const transaction = db.transaction('pokemon', 'readwrite');
+            const store = transaction.objectStore('pokemon');
 
-    const store = db.createObjectStore('pokemon', { keyPath: 'formId' });
+            const allPokemonArray = Array.from(allPokemonMap.values());
+            allPokemonArray.forEach((pokemon) => {
+                store.put(pokemon);
+            });
 
-    store.createIndex("id", "id", { unique: false });
-    store.createIndex("name", "name", { unique: false });
-    store.createIndex("type1", "type1", { unique: false });
-    store.createIndex("type2", "type2", { unique: false });
-    store.createIndex("generation", "generation", { unique: false });
-    store.createIndex("dexNr", "dexNr", { unique: false });
+            transaction.onerror = (event) => {
+                console.error('Transaction error:', event);
+                reject(event);
+            };
+
+            transaction.oncomplete = (event) => {
+                db.close();
+                resolve();
+            };
+        };
+    });
 }
 
-request.onsuccess = (event) => {
-    const db = request.result;
-    const transaction = db.transaction('pokemon', 'readwrite');
+export function openDB(): Promise<IDBDatabase> {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('pokedex', 3);
 
-    const store = transaction.objectStore('pokemon');
+        request.onerror = (event) => {
+            console.error('Database error:', event);
+            reject(event);
+        };
 
-    const nameIndex = store.index('name');
-    const idIndex = store.index('id');
-    const type1Index = store.index('type1');
-    const type2Index = store.index('type2');
-    const generationIndex = store.index('generation');
-    const dexNrIndex = store.index('dexNr');
-
-    const allPokemonArray = Array.from(allPokemonMap.values());
-
-    allPokemonArray.forEach((pokemon) => {
-        store.put(pokemon);
+        request.onsuccess = (event) => {
+            resolve(request.result);
+        };
     });
+}
 
-    const formIDQuery = store.get('CHARIZARD');
-    const type1Query = type1Index.getAll('POKEMON_TYPE_STEEL');
-    const type2Query = type2Index.getAll('POKEMON_TYPE_STEEL');
-    const idQuery = idIndex.getAll('MEOWTH'); //has two regional forms + orginal
-    const generationQuery = generationIndex.getAll(1);
-    const dexNrQuery = dexNrIndex.getAll(201); // unown has a bunch of forms
+export function getAllPokemon(): Promise<Pokemon[]> {
+    return new Promise((resolve, reject) => {
+        openDB().then((db) => {
+            const transaction = db.transaction('pokemon', 'readonly');
+            const store = transaction.objectStore('pokemon');
+            const request = store.getAll();
 
-    console.log("poo")
+            request.onerror = (event) => {
+                console.error('Request error:', event);
+                reject(event);
+            };
 
-    formIDQuery.onsuccess = (event) => {
-        console.log('FormID query:', formIDQuery.result);
-    }
-
-    type1Query.onsuccess = (event) => {
-        console.log('Type1 query (POKEMON_TYPE_STEEL):', type1Query.result);
-    }
-
-    type2Query.onsuccess = (event) => {
-        console.log('Type2 query (POKEMON_TYPE_STEEL):', type2Query.result);
-    }
-
-    idQuery.onsuccess = (event) => {
-        console.log('ID query:', idQuery.result);
-    }
-
-    generationQuery.onsuccess = (event) => {
-        console.log('Generation query:', generationQuery.result);
-    }
-
-    dexNrQuery.onsuccess = (event) => {
-        console.log('DexNr query:', dexNrQuery.result);
-    }
-
-    transaction.oncomplete = (event) => {
-        db.close();
-    }
-
-    transaction.onerror = (event) => {
-        console.error('Transaction error:', event);
-    }
-
+            request.onsuccess = (event) => {
+                console.log('Request time:', event.timeStamp);
+                resolve(request.result);
+            };
+        });
+    });
 }
