@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "strict": false,
+        "module": "ESNext",
+        "sourceMap": true,
+        "lib": ["esnext", "DOM", "DOM.Iterable"],
+    }
+}
