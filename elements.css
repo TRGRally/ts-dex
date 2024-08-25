@@ -1,0 +1,151 @@
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: var(--bg1);
+
+    padding: 1rem;
+    border-radius: 0.5rem;
+
+    gap: 1rem;
+
+    cursor: pointer;
+
+    .card-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-block: 0.5rem;
+
+        .dexNr {
+            opacity: 0.75;
+        }
+    }
+
+    & img {
+        overflow: hidden;
+        margin-top: auto;
+    }
+
+    .attributes {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0.25rem;
+
+        display: flex;
+        align-items: center;
+
+        border-bottom-left-radius: 8px;
+        border-top-right-radius: 8px;
+
+        background-color: var(--primary);
+
+        .attribute {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+
+            font-weight: 500;
+
+
+            .material-symbols-rounded {
+                font-size: 18px;
+            }
+        }
+
+        .attribute.functional {
+            color: var(--bg2);
+
+            .material-symbols-rounded {
+                text-shadow: 0px 0px 3px var(--text2);
+            }
+        }
+
+    }
+
+    .attributes:has(.functional) {
+        background: linear-gradient(45deg in oklab, #ff33c4, #fff983, #00ded6);
+        box-shadow: -2px 2px 3px 0px rgba(0, 0, 0, 0.2);
+    }
+}
+
+.logo-landscape {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    line-height: 1;
+    margin-right: 2px;
+
+    img {
+        height: 2.75rem;
+        aspect-ratio: 1;
+        margin-right: 0.5rem;
+    }
+
+    .logo-text {
+        display: flex;
+        flex-direction: column;
+
+        .text-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .text-sub {
+            line-height: 1.25;
+            font-weight: 400;
+            font-size: 0.8rem;
+            font-style: italic;
+            opacity: 0.75;
+        }
+    }
+}
+
+.search-bar {
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    border: solid 2px var(--bg3);
+    border-radius: 8px;
+    height: 2rem;   
+
+    .icon-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        aspect-ratio: 1;
+        height: 100%;
+    }
+
+    & input {
+        font-family: var(--font-family);
+        flex-grow: 1;
+        font-size: 18px;
+        background-color: transparent;
+        color: var(--text1);
+        outline: none;
+        border: none;
+    }
+}
+
+.sort-icon {
+    border: solid 2px var(--bg3);
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2rem;
+    border-radius: 8px;
+
+    cursor: pointer;
+}
+
+.sort-icon.active,
+.search-bar.active {
+    color: var(--primary);  
+    border-color: var(--primary);
+}

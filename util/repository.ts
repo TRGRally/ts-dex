@@ -2,6 +2,16 @@ enum BaseURL {
     PokedexAPI = 'https://pokemon-go-api.github.io/pokemon-go-api/api',
 }
 
+enum sortBy {
+    Name = "name",
+    DexNr = "dexNr"
+}
+
+enum sortDir {
+    Asc = "asc",
+    Desc = "desc"
+}
+
 const pokemonData = await fetchPokemonJson(); 
 const regionForms = extractRegionForms(pokemonData);
 const allPokemonData = pokemonData.concat(regionForms);
@@ -242,7 +252,8 @@ export function initDB(allPokemonMap: Map<string, Pokemon>): Promise<void> {
     });
 }
 
-export function openDB(): Promise<IDBDatabase> {
+//private to ensure access through repository only
+function openDB(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open('pokedex', 3);
 
@@ -273,6 +284,57 @@ export function getAllPokemon(): Promise<Pokemon[]> {
                 console.log('Request time:', event.timeStamp);
                 resolve(request.result);
             };
+        });
+    });
+}
+
+//prioritises matches that start with the query, then contains
+export function searchPokemonByName(rawQuery: string): Promise<Pokemon[]> {
+    return new Promise((resolve, reject) => {
+
+        const startTime = performance.now();
+
+        openDB().then((db) => {
+            const transaction = db.transaction('pokemon', 'readonly');
+            const store = transaction.objectStore('pokemon');
+            const index = store.index('name');
+            const query = rawQuery.toLowerCase();
+
+            transaction.onerror = (event) => {
+                console.error('Transaction error:', event);
+                reject(event);
+            };
+
+            const matchedPokemon: { pokemon: Pokemon, rank: number }[] = [];
+
+            index.openCursor().onsuccess = (event) => {
+                const cursor = (event.target as IDBRequest<IDBCursorWithValue>).result;
+                if (cursor) {
+                    const pokemon: Pokemon = cursor.value;
+                    const nameLowerCase = pokemon.name.toLowerCase();
+                    const indexOfQuery = nameLowerCase.indexOf(query);
+
+                    if (indexOfQuery !== -1) {
+                        matchedPokemon.push({ pokemon, rank: indexOfQuery });
+                    }
+
+                    cursor.continue();
+                } else {
+
+                    matchedPokemon.sort((a, b) => a.rank - b.rank);
+                    const sortedPokemon = matchedPokemon.map(entry => entry.pokemon);
+
+                    const endTime = performance.now();
+                    const queryDuration = endTime - startTime;
+
+                    console.log("Request time:", queryDuration)
+
+                    resolve(sortedPokemon);
+                }
+            };
+
+        }).catch((error) => {
+            reject(error);
         });
     });
 }
