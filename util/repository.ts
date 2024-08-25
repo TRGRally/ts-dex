@@ -1,5 +1,6 @@
 enum BaseURL {
     PokedexAPI = 'https://pokemon-go-api.github.io/pokemon-go-api/api',
+    TypeIcons = 'https://static.wikia.nocookie.net/pokemongo/images/b/b0'
 }
 
 enum sortBy {
@@ -29,7 +30,7 @@ allPokemonArray.forEach((pokemon) => {
 });
 
 
-export async function get(apiUrl: string): Promise<any> {
+export async function getJson(apiUrl: string): Promise<any> {
 
     const fullUrl = `${BaseURL.PokedexAPI}/${apiUrl}`;
 
@@ -48,8 +49,16 @@ export async function get(apiUrl: string): Promise<any> {
     }
 }
 
+export function getIconFromType(type: string): string {
+    const parts = type.split("_");
+    const typeName = parts[-1];
+    return `${BaseURL.TypeIcons}/${typeName}.png`;
+}
+
+
+
 async function fetchPokemonJson(): Promise<PokemonJson[]> {
-    let data = await get("pokedex.json");
+    let data = await getJson("pokedex.json");
     return data;
 }
 
