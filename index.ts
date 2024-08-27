@@ -25,7 +25,6 @@ document.addEventListener('click', function(event) {
         console.log(event.target);
         (event.target as HTMLElement).classList.toggle("active");
     }
-    console.log("shitfartt")
 });
 
 
@@ -44,7 +43,7 @@ function renderPokemon(pokemonArray: Pokemon[]): void {
             alola: pokemon.formId == ((pokemon.id).toString() + "_ALOLA"),
             galarian: pokemon.formId == ((pokemon.id).toString() + "_GALARIAN"),
             paldea: pokemon.formId == ((pokemon.id).toString() + "_PALDEA"),
-            hisui: pokemon.formId == ((pokemon.id).toString() + "_HISUI")
+            hisuian: pokemon.formId == ((pokemon.id).toString() + "_HISUIAN")
         }
 
         console.table(regions);
@@ -64,7 +63,7 @@ function renderPokemon(pokemonArray: Pokemon[]): void {
             region = "Paldea"
             isRegional = true;
         }
-        if (regions.hisui) {
+        if (regions.hisuian) {
             region = "Hisui"
             isRegional = true;
         }
@@ -108,6 +107,13 @@ function renderPokemon(pokemonArray: Pokemon[]): void {
             <div class="card-title"><span class="dexNr">#${pokemon.dexNr}</span> ${pokemon.name}</div>
             ${attributes}
         `;
+
+        pokemonCard.setAttribute('data-form-id', `${pokemon.formId}`)
+
+        pokemonCard.addEventListener("click", () => {
+            console.log(pokemon)
+        })
+
         container.appendChild(pokemonCard);
     });
 }
