@@ -1,20 +1,19 @@
 import * as repo from "./util/repository.js";
 
 
-if (repo.isDBEmpty() || repo.isDBStale()) {
-    console.log("DB is empty or stale, refreshing...");
+let dbEmpty = await repo.isDBEmpty();
+console.log("empty", dbEmpty);
+    console.log("stale", repo.isDBStale());
+if (dbEmpty || repo.isDBStale()) {
+    console.warn("DB is empty or stale, refreshing...");
     await repo.initDB();
 }
 
+//beg browser to listen for storage persist
 if (navigator.storage && navigator.storage.persist) {
-    navigator.storage.persist().then((persistent) => {
-      if (persistent) {
-        console.log("Storage will not be cleared except by explicit user action");
-      } else {
-        console.log("Storage may be cleared by the UA under storage pressure.");
-      }
-    });
-  }
+    const isPersisted = await navigator.storage.persist();
+    console.log(`Persisted storage granted: ${isPersisted}`);
+}
 
 // repo.getAllPokemon().then((pokemon) => {
 //     console.log(pokemon);
