@@ -12,6 +12,8 @@
     gap: 1rem;
 
     cursor: pointer;
+    text-decoration: none !important;
+    color: inherit !important;
 
     .card-title {
         font-size: 18px;
@@ -69,6 +71,7 @@
         background: linear-gradient(45deg in oklab, #ff33c4, #fff983, #00ded6);
         box-shadow: -2px 2px 3px 0px rgba(0, 0, 0, 0.2);
     }
+
 }
 
 .logo-landscape {
@@ -79,6 +82,7 @@
     justify-content: flex-start;
     line-height: 1;
     margin-right: 2px;
+    margin-bottom: 0.5rem;
 
     img {
         height: 2.75rem;

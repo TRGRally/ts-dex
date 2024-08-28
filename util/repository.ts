@@ -13,21 +13,7 @@ enum sortDir {
     Desc = "desc"
 }
 
-const pokemonData = await fetchPokemonJson(); 
-const regionForms = extractRegionForms(pokemonData);
-const allPokemonData = pokemonData.concat(regionForms);
-const allPokemonArray = getPokemonArray(allPokemonData);
 
-//map of all pokemon by formid -> pokemon
-//nidoran male and female have the same formid but belonging to a different pokemon id. 
-//this is the only non-unique formid across all pokemon ids.
-//basically formid == uniqueid if you ignore nidoran. its irrelevant anyway.
-
-export const allPokemonMap = new Map<string, Pokemon>();
-
-allPokemonArray.forEach((pokemon) => {
-    allPokemonMap.set(pokemon.formId, pokemon);
-});
 
 
 export async function getJson(apiUrl: string): Promise<any> {
@@ -76,7 +62,6 @@ function extractRegionForms(pokemonJsonArray: PokemonJson[]): PokemonJson[] {
 
     return regionFormsArray;
 }
-
 
 function getPokemonArray(pokemonJsonArray: PokemonJson[]): Pokemon[] {
 
@@ -215,7 +200,28 @@ function getPokemonArray(pokemonJsonArray: PokemonJson[]): Pokemon[] {
 
 const indexedDB = window.indexedDB;
 
-export function initDB(allPokemonMap: Map<string, Pokemon>): Promise<void> {
+export async function initDB(): Promise<void> {
+    localStorage.setItem('lastUpdate', new Date().toISOString());
+    console.log('db refreshed');
+
+    const pokemonData = await fetchPokemonJson(); 
+    const regionForms = extractRegionForms(pokemonData);
+    const allPokemonData = pokemonData.concat(regionForms);
+    const allPokemonArray = getPokemonArray(allPokemonData);
+
+    //map of all pokemon by formid -> pokemon
+    //nidoran male and female have the same formid but belonging to a different pokemon id. 
+    //this is the only non-unique formid across all pokemon ids.
+    //basically formid == uniqueid if you ignore nidoran. its irrelevant anyway.
+
+    const allPokemonMap = new Map<string, Pokemon>();
+
+    allPokemonArray.forEach((pokemon) => {
+        allPokemonMap.set(pokemon.formId, pokemon);
+    });
+
+    
+
     return new Promise((resolve, reject) => {
         const request = indexedDB.open('pokedex', 3);
 
@@ -297,6 +303,25 @@ export function getAllPokemon(): Promise<Pokemon[]> {
     });
 }
 
+export function getPokemonById(formId: string): Promise<Pokemon> {
+    return new Promise((resolve, reject) => {
+        openDB().then((db) => {
+            const transaction = db.transaction('pokemon', 'readonly');
+            const store = transaction.objectStore('pokemon');
+            const request = store.get(formId);
+
+            request.onerror = (event) => {
+                console.error('Request error:', event);
+                reject(event);
+            };
+
+            request.onsuccess = (event) => {
+                resolve(request.result);
+            };
+        });
+    });
+}
+
 //prioritises matches that start with the query, then contains
 export function searchPokemonByName(rawQuery: string): Promise<Pokemon[]> {
     return new Promise((resolve, reject) => {
@@ -347,3 +372,43 @@ export function searchPokemonByName(rawQuery: string): Promise<Pokemon[]> {
         });
     });
 }
+
+export function isDBEmpty(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+        openDB().then((db) => {
+            const transaction = db.transaction('pokemon', 'readonly');
+            const store = transaction.objectStore('pokemon');
+            const request = store.count();
+
+            request.onerror = (event) => {
+                console.error('Request error:', event);
+                reject(event);
+            };
+
+            request.onsuccess = (event) => {
+                resolve(request.result === 0);
+            };
+        });
+    });
+}
+
+export function isDBStale() {
+    const lastUpdate = localStorage.getItem('lastUpdate');
+
+    if (!lastUpdate) {
+        return true;
+    }
+
+    const currentTime = new Date().getTime();
+    const lastUpdateDate = new Date(lastUpdate).getTime();
+    const timeSinceUpdate = currentTime - lastUpdateDate;
+    const oneHour = 1000 * 60 * 60;
+
+    console.log('Time since last update:', timeSinceUpdate);
+
+    return timeSinceUpdate > oneHour;
+    
+}
+
+
+

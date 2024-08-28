@@ -82,7 +82,7 @@ nav {
     background-color: var(--bg2);
 
     padding: 0.75rem;
-    gap: 0.75rem;
+    gap: 0.25rem;
 
     .nav-item {
         display: flex;
@@ -90,7 +90,6 @@ nav {
         justify-content: flex-start;
 
         padding: 0.5rem 0.5rem;
-        margin: 0.25rem 0;
         gap: 0.5rem;
 
         border-radius: 0.5rem;
