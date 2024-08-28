@@ -1,6 +1,6 @@
 import * as repo from "./util/repository.js";
 
-
+await repo.initDB();
 let dbEmpty = await repo.isDBEmpty();
 console.log("empty", dbEmpty);
     console.log("stale", repo.isDBStale());
@@ -8,6 +8,7 @@ if (dbEmpty || repo.isDBStale()) {
     console.warn("DB is empty or stale, refreshing...");
     await repo.initDB();
 }
+
 
 //beg browser to listen for storage persist
 if (navigator.storage && navigator.storage.persist) {
@@ -27,4 +28,5 @@ document.addEventListener('click', function(event) {
     }
 });
 
-
+let poo = repo.getTypeIcon("POKEMON_TYPE_FIRE")
+console.log(poo);

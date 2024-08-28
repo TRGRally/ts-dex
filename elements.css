@@ -30,6 +30,16 @@
         margin-top: auto;
     }
 
+    .type-icons {
+        display: flex;
+        gap: 0.5rem;
+
+        > * {
+            aspect-ratio: 1;
+            height: 1.5rem;
+        }
+    }
+
     .attributes {
         position: absolute;
         top: 0;

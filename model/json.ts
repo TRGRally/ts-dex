@@ -1,3 +1,21 @@
+type WeatherBoostJson = {
+    id: string;
+    names: NamesJson;
+    assetName: string;
+}
+
+//the more complete format given in types.json
+type TypeJson = {
+    type: string;
+    names: NamesJson;
+    imageUrl: string;
+    doubleDamageFrom: string[];
+    halfDamageFrom: string[];
+    noDamageFrom: string[];
+    weatherBoost: WeatherBoostJson;
+}
+
+//specifically the format given in pokemon.json
 type PokemonTypeJson = {
     type: string;
     names: NamesJson;

@@ -184,3 +184,6 @@ header {
     padding-left: calc(0.75rem - 11px);
 }
 
+.muted {
+    opacity: 0.25;
+}

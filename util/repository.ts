@@ -1,6 +1,7 @@
 enum BaseURL {
     PokedexAPI = 'https://pokemon-go-api.github.io/pokemon-go-api/api',
-    TypeIcons = 'https://static.wikia.nocookie.net/pokemongo/images/b/b0'
+    PokeMiners = 'https://raw.githubusercontent.com/PokeMiners/pogo_assets/master'
+
 }
 
 enum sortBy {
@@ -35,16 +36,28 @@ export async function getJson(apiUrl: string): Promise<any> {
     }
 }
 
-export function getIconFromType(type: string): string {
-    const parts = type.split("_");
-    const typeName = parts[-1];
-    return `${BaseURL.TypeIcons}/${typeName}.png`;
+export function getTypeIcon(type: string): string {
+
+    if (!type.includes('_')) {
+        type = `POKEMON_TYPE_${type.toUpperCase()}`;
+    }
+    console.log('Type:', type);
+
+    return `${BaseURL.PokeMiners}/Images/Types/${type}.png`;
 }
 
+export function getWeatherIcon(assetName: string): string {
+    return `${BaseURL.PokeMiners}/Images/Weather/${assetName}.png`;
+}
 
 
 async function fetchPokemonJson(): Promise<PokemonJson[]> {
     let data = await getJson("pokedex.json");
+    return data;
+}
+
+async function fetchTypeJson(): Promise<TypeJson[]> {
+    let data = await getJson("types.json");
     return data;
 }
 
@@ -62,6 +75,43 @@ function extractRegionForms(pokemonJsonArray: PokemonJson[]): PokemonJson[] {
 
     return regionFormsArray;
 }
+
+function getTypesArray(typesJsonArray: TypeJson[]): Type[] {
+    
+        function convertTypeJsonToType(typeJson: TypeJson): Type {
+            const type = typeJson.type;
+            const name = typeJson.names.English;
+            const imageUrl = getTypeIcon(type);
+            const doubleDamageFrom = typeJson.doubleDamageFrom;
+            const halfDamageFrom = typeJson.halfDamageFrom;
+            const noDamageFrom = typeJson.noDamageFrom;
+            const weatherBoostJson = typeJson.weatherBoost;
+
+            const weatherBoost = {
+                id: weatherBoostJson.id,
+                name: weatherBoostJson.names.English,
+                imageUrl: getWeatherIcon(weatherBoostJson.id)
+            } as WeatherBoost;
+    
+            const typeObject = {
+                type: type,
+                name: name,
+                imageUrl: imageUrl,
+                doubleDamageFrom: doubleDamageFrom,
+                halfDamageFrom: halfDamageFrom,
+                noDamageFrom: noDamageFrom,
+                weatherBoost: weatherBoost
+            } as Type;
+    
+            return typeObject;
+        }
+    
+        const typesArray = typesJsonArray.map((typeJson) => {
+            return convertTypeJsonToType(typeJson);
+        });
+    
+        return typesArray;
+    }
 
 function getPokemonArray(pokemonJsonArray: PokemonJson[]): Pokemon[] {
 
@@ -204,6 +254,12 @@ export async function initDB(): Promise<void> {
     localStorage.setItem('lastUpdate', new Date().toISOString());
     console.log('db refreshed');
 
+    const typesData = await fetchTypeJson();
+    const allTypesData = getTypesArray(typesData);
+
+    //temporary costume exclusion while i work out how theyll be handled
+    const costumeFormIds = ['PIKACHU_DOCTOR', 'PIKACHU_FLYING_01', 'PIKACHU_FLYING_02', 'PIKACHU_TSHIRT_01', 'PIKACHU_TSHIRT_02', 'PIKACHU_FLYING_03', 'PIKACHU_FLYING_04', 'PIKACHU_FLYING_5TH_ANNIV', 'PIKACHU_FLYING_OKINAWA', 'PIKACHU_GOFEST_2024_MTIARA', 'PIKACHU_GOFEST_2024_STIARA', 'PIKACHU_GOTOUR_2024_A', 'PIKACHU_GOTOUR_2024_A_02', 'PIKACHU_GOTOUR_2024_B', 'PIKACHU_GOTOUR_2024_B_02', 'PIKACHU_HORIZONS', 'PIKACHU_JEJU', 'PIKACHU_KARIYUSHI', 'PIKACHU_POP_STAR', 'PIKACHU_ROCK_STAR', 'PIKACHU_SUMMER_2023_A', 'PIKACHU_SUMMER_2023_B', 'PIKACHU_SUMMER_2023_C', 'PIKACHU_SUMMER_2023_D', 'PIKACHU_SUMMER_2023_E', 'PIKACHU_TSHIRT_03', 'EEVEE_GOFEST_2024_MTIARA', 'EEVEE_GOFEST_2024_STIARA', 'ESPEON_GOFEST_2024_SSCARF', 'UMBREON_GOFEST_2024_MSCARF'];
+
     const pokemonData = await fetchPokemonJson(); 
     const regionForms = extractRegionForms(pokemonData);
     const allPokemonData = pokemonData.concat(regionForms);
@@ -217,13 +273,19 @@ export async function initDB(): Promise<void> {
     const allPokemonMap = new Map<string, Pokemon>();
 
     allPokemonArray.forEach((pokemon) => {
+
+        //temp costume exclusion
+        if (costumeFormIds.includes(pokemon.formId)) {
+            return;
+        }
+
         allPokemonMap.set(pokemon.formId, pokemon);
     });
 
     
 
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open('pokedex', 3);
+        const request = indexedDB.open('pokedex', 7);
 
         request.onerror = (event) => {
             console.error('Database error:', event);
@@ -232,26 +294,51 @@ export async function initDB(): Promise<void> {
 
         request.onupgradeneeded = (event) => {
             const db = request.result;
+
             if (db.objectStoreNames.contains('pokemon')) {
                 db.deleteObjectStore('pokemon');
             }
-            const store = db.createObjectStore('pokemon', { keyPath: 'formId' });
-            store.createIndex("id", "id", { unique: false });
-            store.createIndex("name", "name", { unique: false });
-            store.createIndex("type1", "type1", { unique: false });
-            store.createIndex("type2", "type2", { unique: false });
-            store.createIndex("generation", "generation", { unique: false });
-            store.createIndex("dexNr", "dexNr", { unique: false });
+            if (db.objectStoreNames.contains('types')) {
+                db.deleteObjectStore('types');
+            }
+
+            const pokemonStore = db.createObjectStore('pokemon', { keyPath: 'formId' });
+            pokemonStore.createIndex("id", "id", { unique: false });
+            pokemonStore.createIndex("name", "name", { unique: false });
+            pokemonStore.createIndex("type1", "type1", { unique: false });
+            pokemonStore.createIndex("type2", "type2", { unique: false });
+            pokemonStore.createIndex("generation", "generation", { unique: false });
+            pokemonStore.createIndex("dexNr", "dexNr", { unique: false });
+
+            const typeStore = db.createObjectStore('types', { keyPath: 'type' });
+            typeStore.createIndex("name", "name", { unique: true });
+            typeStore.createIndex("doubleDamageFrom", "doubleDamageFrom", { unique: false });
+            typeStore.createIndex("halfDamageFrom", "halfDamageFrom", { unique: false });
+            typeStore.createIndex("noDamageFrom", "noDamageFrom", { unique: false });
+            typeStore.createIndex("weatherBoostName", "weatherBoost.name", { unique: false });
+
+
+            //just refresh the page to get new data (lazy lol)
+            pokemonStore.transaction.oncomplete = (event) => {
+                location.reload();
+            };
+
+
         };
 
         request.onsuccess = (event) => {
             const db = request.result;
-            const transaction = db.transaction('pokemon', 'readwrite');
-            const store = transaction.objectStore('pokemon');
+            const transaction = db.transaction(['pokemon', 'types'], 'readwrite');
+            const pokemonStore = transaction.objectStore('pokemon');
+            const typeStore = transaction.objectStore('types');
 
             const allPokemonArray = Array.from(allPokemonMap.values());
             allPokemonArray.forEach((pokemon) => {
-                store.put(pokemon);
+                pokemonStore.put(pokemon);
+            });
+
+            allTypesData.forEach((type) => {
+                typeStore.put(type);
             });
 
             transaction.onerror = (event) => {
@@ -270,7 +357,7 @@ export async function initDB(): Promise<void> {
 //private to ensure access through repository only
 function openDB(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open('pokedex', 3);
+        const request = indexedDB.open("pokedex");
 
         request.onerror = (event) => {
             console.error('Database error:', event);
@@ -287,8 +374,9 @@ export function getAllPokemon(): Promise<Pokemon[]> {
     return new Promise((resolve, reject) => {
         openDB().then((db) => {
             const transaction = db.transaction('pokemon', 'readonly');
-            const store = transaction.objectStore('pokemon');
-            const request = store.getAll();
+            const pokemonStore = transaction.objectStore('pokemon');
+
+            const request = pokemonStore.getAll();
 
             request.onerror = (event) => {
                 console.error('Request error:', event);
@@ -307,8 +395,9 @@ export function getPokemonById(formId: string): Promise<Pokemon> {
     return new Promise((resolve, reject) => {
         openDB().then((db) => {
             const transaction = db.transaction('pokemon', 'readonly');
-            const store = transaction.objectStore('pokemon');
-            const request = store.get(formId);
+            const pokemonStore = transaction.objectStore('pokemon');
+
+            const request = pokemonStore.get(formId);
 
             request.onerror = (event) => {
                 console.error('Request error:', event);
@@ -330,8 +419,9 @@ export function searchPokemonByName(rawQuery: string): Promise<Pokemon[]> {
 
         openDB().then((db) => {
             const transaction = db.transaction('pokemon', 'readonly');
-            const store = transaction.objectStore('pokemon');
-            const index = store.index('name');
+            const pokemonStore = transaction.objectStore('pokemon');
+
+            const index = pokemonStore.index('name');
             const query = rawQuery.toLowerCase();
 
             transaction.onerror = (event) => {
@@ -376,18 +466,27 @@ export function searchPokemonByName(rawQuery: string): Promise<Pokemon[]> {
 export function isDBEmpty(): Promise<boolean> {
     return new Promise((resolve, reject) => {
         openDB().then((db) => {
-            const transaction = db.transaction('pokemon', 'readonly');
-            const store = transaction.objectStore('pokemon');
-            const request = store.count();
+            try {
+                const transaction = db.transaction('pokemon', 'readonly');
+                const pokemonStore = transaction.objectStore('pokemon');
 
-            request.onerror = (event) => {
-                console.error('Request error:', event);
-                reject(event);
-            };
+                const request = pokemonStore.count();
 
-            request.onsuccess = (event) => {
-                resolve(request.result === 0);
-            };
+                request.onerror = (event) => {
+                    console.error('Request error:', event);
+                    reject(event);
+                };
+
+                request.onsuccess = (event) => {
+                    resolve(request.result === 0);
+                };
+            } catch (error) {
+                console.error('Transaction error:', error);
+                resolve(true); // Resolve as true if the object store does not exist
+            }
+        }).catch((error) => {
+            console.error('Failed to open database:', error);
+            reject(error);
         });
     });
 }
