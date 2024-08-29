@@ -65,7 +65,7 @@ export function PokemonCard(pokemon: Pokemon): HTMLElement {
             </div>
         `
     }
-    const pokemonCard = document.createElement('div');
+    const pokemonCard = document.createElement('a');
     pokemonCard.classList.add('card');
     pokemonCard.innerHTML = `
         <img draggable="false" src="${ pokemon.imageUrl || "https://cdn.discordapp.com/emojis/1276312604406710303.gif?size=44&quality=lossless" }" />
@@ -74,12 +74,8 @@ export function PokemonCard(pokemon: Pokemon): HTMLElement {
         ${attributes}
     `;
 
-    pokemonCard.setAttribute('form-id', `/pokedex/${pokemon.formId.toLowerCase()}`);
+    pokemonCard.setAttribute('href', `/pokedex/${pokemon.formId.toLowerCase()}`);
     pokemonCard.style.backgroundColor = repo.typeColors[pokemon.type1];
-
-    pokemonCard.addEventListener("click", () => {
-        pokemonCard.classList.add("muted");
-    })
 
     return pokemonCard;
 }
