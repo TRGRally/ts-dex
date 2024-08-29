@@ -41,7 +41,6 @@ export function getTypeIcon(type: string): string {
     if (!type.includes('_')) {
         type = `POKEMON_TYPE_${type.toUpperCase()}`;
     }
-    console.log('Type:', type);
 
     return `${BaseURL.PokeMiners}/Images/Types/${type}.png`;
 }
@@ -413,7 +412,12 @@ export function getPokemonById(formId: string): Promise<Pokemon> {
 
 //prioritises matches that start with the query, then contains
 export function searchPokemonByName(rawQuery: string): Promise<Pokemon[]> {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+
+        if (rawQuery.length < 1) {
+            const allPokemon = await getAllPokemon();
+            resolve(allPokemon);
+        }
 
         const startTime = performance.now();
 
@@ -507,6 +511,27 @@ export function isDBStale() {
 
     return timeSinceUpdate > oneHour;
     
+}
+
+export const typeColors = {
+    POKEMON_TYPE_BUG: "#92BC2C",
+    POKEMON_TYPE_DARK: "#595761",
+    POKEMON_TYPE_DRAGON: "#0C69C8",
+    POKEMON_TYPE_ELECTRIC: "#F2D94E",
+    POKEMON_TYPE_FIRE: "#FBA54C",
+    POKEMON_TYPE_FAIRY: "#EE90E6",
+    POKEMON_TYPE_FIGHTING: "#D3425F",
+    POKEMON_TYPE_FLYING: "#A1BBEC",
+    POKEMON_TYPE_GHOST: "#5F6DBC",
+    POKEMON_TYPE_GRASS: "#5FBD58",
+    POKEMON_TYPE_GROUND: "#DA7C4D",
+    POKEMON_TYPE_ICE: "#75D0C1",
+    POKEMON_TYPE_NORMAL: "#A0A29F",
+    POKEMON_TYPE_POISON: "#B763CF",
+    POKEMON_TYPE_PSYCHIC: "#FA8581",
+    POKEMON_TYPE_ROCK: "#C9BB8A",
+    POKEMON_TYPE_STEEL: "#5695A3",
+    POKEMON_TYPE_WATER: "#539DDF"
 }
 
 
