@@ -107,6 +107,46 @@ export function PokemonStats(pokemon: Pokemon): HTMLElement {
 
 }
 
+export function PokemonMove(move: PokemonMove): HTMLElement {
+    const moveElement = document.createElement('div');
+    moveElement.attributes['data-id'] = move.id;
+    moveElement.classList.add('move');
+
+    if (move.isLegacy) {
+        moveElement.classList.add('legacy');
+    }
+
+    moveElement.innerHTML = `
+        <div class="move-type"><img src="${repo.getTypeIcon(move.type)}" /></div>
+        <div class="move-name">${move.name}</div>
+    `;
+
+    return moveElement;
+}
+
+export function PokemonMoveset(moves: PokemonMove[]): HTMLElement {
+    const moveset = document.createElement('div');
+    moveset.classList.add('moveset');
+
+    //legacy move priority
+    moves.sort((a, b) => {
+        if (a.isLegacy && !b.isLegacy) {
+            return -1;
+        }
+        if (!a.isLegacy && b.isLegacy) {
+            return 1;
+        }
+        return 0;
+    });
+
+    moves.forEach((move) => {
+        moveset.appendChild(PokemonMove(move));
+    });
+
+    return moveset;
+}
+
+
 
 export function PokemonShowcase(pokemon: Pokemon): HTMLElement {
     const showcase = document.createElement('div');
