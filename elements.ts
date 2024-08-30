@@ -107,18 +107,37 @@ export function PokemonStats(pokemon: Pokemon): HTMLElement {
 
 }
 
+export function PokemonEvolutions(evolutions: Evolution[]): HTMLElement {
+    const evolutionElement = document.createElement('div');
+    evolutionElement.classList.add('evolutions');
+
+    evolutions.forEach((evolution) => {
+        const evolutionCard = document.createElement('div');
+        evolutionCard.classList.add('evolution');
+        evolutionCard.innerHTML = `
+            <div class="evolution-name">${evolution.formId}</div>
+            <div class="evolution-candy">${evolution.candies} candies</div>
+        `;
+        evolutionElement.appendChild(evolutionCard);
+    });
+
+    return evolutionElement;
+}
+
 export function PokemonMove(move: PokemonMove): HTMLElement {
     const moveElement = document.createElement('div');
     moveElement.attributes['data-id'] = move.id;
     moveElement.classList.add('move');
-
+    let legacyEffect = "";
     if (move.isLegacy) {
         moveElement.classList.add('legacy');
+        legacyEffect = `<img class="legacy-effect" src="https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Effects/ring_spike_sharp.png"></img>`;
     }
 
     moveElement.innerHTML = `
         <div class="move-type"><img src="${repo.getTypeIcon(move.type)}" /></div>
         <div class="move-name">${move.name}</div>
+        ${legacyEffect}
     `;
 
     return moveElement;
@@ -158,12 +177,12 @@ export function PokemonShowcase(pokemon: Pokemon): HTMLElement {
     showcase.innerHTML = `
         <img draggable="false" src="${pokemon.imageUrl || "/assets/unknown.png"}" />
     
-        <div class="card-title">
+        <div class="title">
             <span class="dexNr">#${pokemon.dexNr}</span> 
             <span>${pokemon.name}</span>
         </div>
     
-        ${pokemon.megaEvolutions.length > 0 ? `<img draggable="false" src="${repo.getMegaIconSmall()}" />` : ''}
+        ${pokemon.megaEvolutions.length > 0 ? `<img class="mega-icon" draggable="false" src="${repo.getMegaIconSmall()}" />` : ''}
     `;
 
     return showcase;

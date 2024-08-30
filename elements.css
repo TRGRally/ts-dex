@@ -240,7 +240,7 @@
     display: grid;
     grid-template-areas:
         "brief details";
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 280px 1fr;
     grid-template-rows: calc(100vh - 1rem);
     gap: 0.5rem;
     padding: 0.5rem;
@@ -272,7 +272,47 @@
 }
 
 .showcase {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    padding: 1rem;
+    gap: 0.75rem;
+    border-radius: 8px 8px 0 0;
+
+    .title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: white;
+        opacity: 0.9;
+        margin-top: auto;
+
+        .dexNr {
+            opacity: 0.75;
+        }
+    }
+
+    .mega-icon {
+        position: absolute;
+        height: 2rem;
+        aspect-ratio: 1;
+        top: 0.5rem;
+        right: 0.5rem;
+        filter: sepia(1) saturate(7) hue-rotate(284deg) drop-shadow(0 3px 3px rgba(0, 0, 0, 0.25));
+    }
     
+}
+
+.types {
+    display: flex;
+    gap: 0.5rem;
+
+    .type {
+        aspect-ratio: 1;
+        height: 2rem;
+    }
 }
 
 
@@ -326,8 +366,20 @@
     position: relative;
     color: #000c0c;
     font-weight: 420;
-    padding-block: 2px;
-    margin-block: 2px;
+    padding: 2px;
+    margin: 2px;
+    
+
+    .legacy-effect {
+        position: absolute;
+        transform: rotate(-90deg);
+        mix-blend-mode: screen;
+        right: 0;
+        height: 100%;
+        border-radius: 0.25rem;
+        mask-image: linear-gradient(90deg, transparent, white);
+    }
+    
 }
 
 .move.legacy::before {
@@ -338,10 +390,7 @@
     border-radius: 6px;
     background-image: linear-gradient(35deg, #f990e9, #8fedf8);
     z-index: -1;
-    top: -2px;
-    right: -2px;
-    left: -2px;
-    bottom: -2px;
+    inset: -2px;
     mix-blend-mode: darken;
 }
 

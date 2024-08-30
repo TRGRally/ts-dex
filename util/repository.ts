@@ -544,7 +544,7 @@ export function getTypeBackground(type: string): string {
 }
 
 export function getMegaIconSmall(): string {
-    return `${BaseURL.PokeMiners}/Images/Menu%20Icons/ic_mega.png`;
+    return `${BaseURL.PokeMiners}/Images/Menu%20Icons/tex_mega_evolve_icon.png`;
 }
 
 

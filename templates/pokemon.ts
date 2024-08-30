@@ -34,11 +34,24 @@ export default function initPokemon(
     const chargedMoveset = PokemonMoveset(pokemon.chargedMoves);
     chargedMoves.replaceWith(chargedMoveset);
 
+    const evolutions = document.querySelector(".evolutions") as HTMLElement;
+    pokemon.evolutions.forEach((evolution) => {
+        const evolutionCard = document.createElement('div');
+        evolutionCard.classList.add('evolution');
+        evolutionCard.innerHTML = `
+            <div class="evolution-name">${evolution.formId}</div>
+            <div class="evolution-candy">${evolution.candies} candies</div>
+        `;
+        evolutions.appendChild(evolutionCard);
+    });
+
+    
+
 
     const types = document.querySelector(".types") as HTMLElement;
     types.innerHTML = `
-        <img src="${repo.getTypeIcon(pokemon.type1)}" />
-        ${pokemon.type2 ? `<img src="${repo.getTypeIcon(pokemon.type2)}" />` : ""}
+        <img class="type" src="${repo.getTypeIcon(pokemon.type1)}" />
+        ${pokemon.type2 ? `<img class="type" src="${repo.getTypeIcon(pokemon.type2)}" />` : ""}
     `;
     
 }
