@@ -534,5 +534,18 @@ export const typeColors = {
     POKEMON_TYPE_WATER: "#539DDF"
 }
 
+export function getTypeBackground(type: string): string {
+    if (type.includes('_')) {
+        type = type.split('_')[2];
+    }
+    type = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
+    console.log("transformed type:", type);
+    return `${BaseURL.PokeMiners}/Images/Catch%20Card/CatchCard_TypeBG_${type}.png`;
+}
+
+export function getMegaIconSmall(): string {
+    return `${BaseURL.PokeMiners}/Images/Menu%20Icons/ic_mega.png`;
+}
+
 
 

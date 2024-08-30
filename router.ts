@@ -1,11 +1,12 @@
 import * as repo from "./util/repository.js";
 import * as sidebar from "./util/sidebar.js";
-import init from "./templates/pokedex.js";
+import initPokedex from "./templates/pokedex.js";
+import initPokemon from "./templates/pokemon.js";
 
 const routes = {
     "/": {
         template: "/templates/pokedex.html",
-        script: init
+        script: initPokedex
     },
     "/events": {
         template: "/templates/events.html",
@@ -16,13 +17,7 @@ const routes = {
     },
     "/pokedex/:id": {
         template: "/templates/pokemon.html",
-        script: (params, routeData) => {
-            console.log("Pokémon detail page script");
-            console.log("early resolved:", routeData);
-            sidebar.selectPokedex();
-            const title = document.querySelector(".pokemon-name") as HTMLElement;
-            title.innerText = routeData.name;
-        },
+        script: initPokemon,
         resolve: async (params: { id: string }) => {
             const formID = params.id;
             console.log(formID);

@@ -3,7 +3,7 @@ import * as repo from '../util/repository.js';
 import * as sidebar from '../util/sidebar.js';
 
 
-export default function init(
+export default function initPokedex(
     params: { 
         [key: string]: string 
     }, 

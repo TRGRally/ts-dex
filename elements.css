@@ -4,12 +4,12 @@
     flex-direction: column;
     align-items: center;
 
-    background-color: var(--bg1);
     background-repeat: no-repeat;
-    background-size: 140%;
     background-position: center;
-    background-blend-mode: luminosity;
-    background-image: radial-gradient(rgba(0,0,0,0.1), var(--bg0));
+
+    background-color: var(--bg1);
+    background-blend-mode: soft-light;
+    background-image: radial-gradient(circle, var(--bg-color) 0%, transparent 100%);
 
     padding: 0.5rem;
     border-radius: 0.5rem;
@@ -100,6 +100,7 @@
 
 }
 
+
 .logo-landscape {
     display: flex;
     align-items: center;
@@ -176,9 +177,11 @@
 }
 
 .sort-icon.active,
-.search-bar.active {
+.search-bar.active,
+.dex-selector>.option.active {
     color: var(--primary);  
     border-color: var(--primary);
+    filter: drop-shadow(inset 0px 0px 3px var(--primary));
 }
 
 .dex-selector {
@@ -230,4 +233,42 @@
 .dex-selector.active {
     color: var(--primary);
     border-color: var(--primary);
+}
+
+
+.pokemon-layout {
+    display: grid;
+    grid-template-areas:
+        "brief details";
+    grid-template-columns: auto 1fr;
+    grid-template-rows: calc(100vh - 1rem);
+    gap: 0.5rem;
+    padding: 0.5rem;
+    height: 100%;
+
+
+    .brief {
+        grid-area: brief;
+        display: grid;
+
+        .showcase {
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+        }
+    }
+
+    .details {
+        grid-area: details;
+        display: grid;
+    }
+
+    .brief,
+    .details {
+        gap: 0.5rem;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        background-color: var(--bg1);
+    }
+
 }

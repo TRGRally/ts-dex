@@ -68,14 +68,63 @@ export function PokemonCard(pokemon: Pokemon): HTMLElement {
     const pokemonCard = document.createElement('a');
     pokemonCard.classList.add('card');
     pokemonCard.innerHTML = `
-        <img draggable="false" src="${ pokemon.imageUrl || "https://cdn.discordapp.com/emojis/1276312604406710303.gif?size=44&quality=lossless" }" />
+        <img draggable="false" src="${ pokemon.imageUrl || "/assets/unknown.png" }" />
         <div class="type-icons"><img src="${repo.getTypeIcon(pokemon.type1)}" />${pokemon.type2 ? `<img src="${repo.getTypeIcon(pokemon.type2)}" />` : ""}</div>
         <div class="card-title"><span class="dexNr">#${pokemon.dexNr}</span> <span>${pokemon.name}</span></div>
         ${attributes}
     `;
 
     pokemonCard.setAttribute('href', `/pokedex/${pokemon.formId.toLowerCase()}`);
-    pokemonCard.style.backgroundColor = repo.typeColors[pokemon.type1];
+    pokemonCard.style.setProperty('--bg-color', `${repo.typeColors[pokemon.type1]}ff`);
 
     return pokemonCard;
+}
+
+export function PokemonStats(pokemon: Pokemon): HTMLElement {
+    const stats = pokemon.stats;
+    const statsElement = document.createElement('div');
+    statsElement.classList.add('stats');
+
+    statsElement.innerHTML = `
+        <div class="stat">
+            <div class="stat-name">ATK</div>
+            <div class="stat-value">${stats.attack}</div>
+            <progress class="stat-bar" value="${stats.attack}" max="300"></progress>
+        </div>
+        <div class="stat">
+            <div class="stat-name">DEF</div>
+            <div class="stat-value">${stats.defense}</div>
+            <progress class="stat-bar" value="${stats.defense}" max="300"></progress>
+        </div>
+        <div class="stat">
+            <div class="stat-name">HP </div>
+            <div class="stat-value">${stats.stamina}</div>
+            <progress class="stat-bar" value="${stats.stamina}" max="300"></progress>
+        </div>
+    `;
+
+    return statsElement;
+
+}
+
+
+export function PokemonShowcase(pokemon: Pokemon): HTMLElement {
+    const showcase = document.createElement('div');
+    showcase.classList.add('showcase');
+    const backgroundImage = repo.getTypeBackground(pokemon.type1);
+    showcase.style.backgroundImage = `url('${backgroundImage}')`;
+
+
+    showcase.innerHTML = `
+        <img draggable="false" src="${pokemon.imageUrl || "/assets/unknown.png"}" />
+    
+        <div class="card-title">
+            <span class="dexNr">#${pokemon.dexNr}</span> 
+            <span>${pokemon.name}</span>
+        </div>
+    
+        ${pokemon.megaEvolutions.length > 0 ? `<img draggable="false" src="${repo.getMegaIconSmall()}" />` : ''}
+    `;
+
+    return showcase;
 }
