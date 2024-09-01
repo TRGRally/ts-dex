@@ -170,18 +170,22 @@ export function PokemonMoveset(moves: PokemonMove[]): HTMLElement {
 export function PokemonShowcase(pokemon: Pokemon): HTMLElement {
     const showcase = document.createElement('div');
     showcase.classList.add('showcase');
-    const backgroundImage = repo.getTypeBackground(pokemon.type1);
-    showcase.style.backgroundImage = `url('${backgroundImage}')`;
+    const hasEvolutions = pokemon.evolutions.length > 0;
+    const family = `
+        <div class="family ${!hasEvolutions ? 'disabled' : ''}">
+            <a class="family-nav-item">
+                <span class="material-symbols-rounded">arrow_back</span>
+            </a>
+            <a class="family-nav-item">
+                <span class="material-symbols-rounded">arrow_forward</span>
+            </a>
+        </div>
+    `;
 
 
     showcase.innerHTML = `
+        ${family}
         <img draggable="false" src="${pokemon.imageUrl || "/assets/unknown.png"}" />
-    
-        <div class="title">
-            <span class="dexNr">#${pokemon.dexNr}</span> 
-            <span>${pokemon.name}</span>
-        </div>
-    
         ${pokemon.megaEvolutions.length > 0 ? `<img class="mega-icon" draggable="false" src="${repo.getMegaIconSmall()}" />` : ''}
     `;
 
