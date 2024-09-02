@@ -304,6 +304,23 @@
     }
 }
 
+.form-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    & input[type="radio"]:checked + label {
+        background-color: var(--primary);
+        color: var(--bg2);
+    }
+
+    & input[type="radio"] {
+        display: none;
+    }
+
+    
+}
+
 .showcase {
     position: relative;
     display: flex;
