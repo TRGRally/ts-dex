@@ -242,6 +242,60 @@ function getPokemonArray(pokemonJsonArray: PokemonJson[]): Pokemon[] {
         return convertPokemonJsonToPokemon(pokemonJson);
     });
 
+    //crazy id conversion (blame the api)
+    pokemonArray.forEach((pokemon) => {
+        pokemon.evolutions.forEach((evolution) => {
+            if (evolution.formId.includes('_NORMAL')) {
+                evolution.formId = evolution.formId.replace('_NORMAL', '');
+            }
+        });
+    });
+
+    //fix for nidoran male and female
+    pokemonArray.forEach((pokemon) => {
+        if (pokemon.id === "NIDORAN_MALE") {
+            pokemon.formId = "NIDORAN_MALE";
+        }
+        if (pokemon.id === "NIDORAN_FEMALE") {
+            pokemon.formId = "NIDORAN_FEMALE";
+        }
+    });
+    
+
+
+    //creates the symmetric transitive relationship between pokemon regional forms. each pokemon.regionForms should be an exhaustive list of all regional forms it has a relationship with.
+    pokemonArray.forEach((pokemon) => {
+        const regionFormId = pokemon.formId;
+        const regionalForms = new Set<string>();
+
+        //symmetric closure
+        pokemonArray.forEach((potentialParent) => {
+            if (potentialParent.regionForms.includes(regionFormId)) {
+                regionalForms.add(potentialParent.formId);
+                potentialParent.regionForms.forEach((formId) => {
+                    regionalForms.add(formId);
+                });
+            }
+        });
+
+        //transitive closure
+        regionalForms.forEach((formId) => {
+            pokemonArray.forEach((potentialSibling) => {
+                if (regionalForms.has(potentialSibling.formId) && potentialSibling.formId !== regionFormId) {
+                    if (!pokemon.regionForms.includes(potentialSibling.formId)) {
+                        pokemon.regionForms.push(potentialSibling.formId);
+                    }
+                    if (!potentialSibling.regionForms.includes(regionFormId)) {
+                        potentialSibling.regionForms.push(regionFormId);
+                    }
+                }
+            });
+        });
+    });
+
+    console.log('pokemonArray:', pokemonArray);
+
+
     return pokemonArray;
 }
 

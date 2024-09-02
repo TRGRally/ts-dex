@@ -21,8 +21,10 @@ const routes = {
         resolve: async (params: { id: string }) => {
             const formID = params.id;
             console.log(formID);
-            const response = repo.getPokemonById(formID.toUpperCase());
-            return response;
+            const pokemon = repo.getPokemonById(formID.toUpperCase());
+            //fetch regional forms if available
+         
+            return pokemon;
         }
     },
     "404": {
