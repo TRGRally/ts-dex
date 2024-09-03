@@ -18,8 +18,8 @@ export default function initPokemon(
     const pokemon = routeData as unknown as Pokemon;
     console.log(pokemon);
 
-    const background = document.querySelector(".background") as HTMLImageElement;
-    background.src = repo.getTypeBackground(pokemon.type1);
+    const background = document.querySelector(".background") as HTMLElement;
+    background.style.backgroundImage = `url('${repo.getTypeBackground(pokemon.type1)}')`;
 
 
 
