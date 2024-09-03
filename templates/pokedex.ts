@@ -14,111 +14,118 @@ export default function initPokedex(
     console.log("pokedex");
     sidebar.selectPokedex();
 
-    let pageNumber = 1; //will reset on input change 
-    let pageSize = 100;
-    let isSearched: boolean = false;
-
-    const container = document.getElementById('container'); //where the card are appended to
-    const spacer = document.getElementById('spacer'); //discord style continual scroll when lazy loading
-    const main = document.querySelector('main'); //the scrollable element
-
-    repo.getAllPokemon(pageNumber, pageSize).then((allPokemon) => {
-        renderPokemon(allPokemon);
-    });
-
-    function renderPokemon(pokemonArray: Pokemon[], reset: boolean = false): void {
-        
-        if (reset) {
-            container.innerHTML = "";
-        }
-
-        pokemonArray.forEach((pokemon) => {
-            const pokemonCard = PokemonCard(pokemon);
-            container.appendChild(pokemonCard);
-        });
-
-        const remainingHeight = window.innerHeight - container.getBoundingClientRect().bottom;
-        spacer.style.height = Math.max(remainingHeight, 400) + 'px';
-    }
-
-
-    const dexSearchInput = document.getElementById("dex-search") as HTMLInputElement
-    dexSearchInput.addEventListener("input", async (e) => {
-
-        if (dexSearchInput.value.length < 1) {
-            isSearched = false;
-        } else {
-            isSearched = true;
-        }
-        pageNumber = 1;
-
-        let result: Pokemon[];
-        if (isSearched) {
-            result = await repo.searchPokemonByName(dexSearchInput.value, pageNumber, pageSize);
-        } else {
-            result = await repo.getAllPokemon(pageNumber, pageSize);
-        }
-
-        console.log(result)
-        renderPokemon(result, true);
-    });
-
-    const dexSelector = document.querySelector(".dex-selector") as HTMLElement;
-    dexSelector.addEventListener("click", async (e) => {
-
-        let clickedElement = e.target as HTMLElement;
-        while (clickedElement && !clickedElement.classList.contains("option")) {
-            clickedElement = clickedElement.parentElement;
-        }
-        if (clickedElement) {
-            const options = Array.from(document.querySelectorAll(".option"));
-            options.forEach(option => option.classList.remove("active"));
-            clickedElement.classList.add("active");
-        }
-
-        dexSelector.classList.toggle("open");
-
-        
-    });
-
-    //lazy loading scroll
-    let bottomReached = false;
-    main.addEventListener("scroll", async (e) => {
-        const scrollable = e.target as HTMLElement;
-
-        if (bottomReached) {
-            return;
-        }
-
-        const threshold = 400;
-        if (Math.abs(scrollable.scrollHeight - scrollable.scrollTop - scrollable.clientHeight) <= threshold) {
-            console.log("bottom reached");
-            bottomReached = true;
+    class PokemonLoader {
+        private pageNumber: number = 1;
+        private pageSize: number = 100;
+        private isSearched: boolean = false;
+        private container: HTMLElement;
+        private spacer: HTMLElement;
+        private main: HTMLElement;
+        private dexSearchInput: HTMLInputElement;
+        private bottomReached: boolean = false;
+        private totalPokemonCount: number = 0;
     
-            pageNumber++;
+        constructor(containerId: string, spacerId: string, mainSelector: string, searchInputId: string) {
+            this.container = document.getElementById(containerId);
+            this.spacer = document.getElementById(spacerId);
+            this.main = document.querySelector(mainSelector);
+            this.dexSearchInput = document.getElementById(searchInputId) as HTMLInputElement;
+    
+            this.init();
+        }
+        
+        //dependency injection? more like dependency rejection
+        private async init() {
+            this.totalPokemonCount = await repo.getTotalPokemonCount();
+            await this.loadPage();
+            this.setupEventListeners();
+        }
+    
+        private async loadPage(reset: boolean = false) {
             let result: Pokemon[];
-            if (isSearched) {
-                result = await repo.searchPokemonByName(dexSearchInput.value, pageNumber, pageSize);
+            if (this.isSearched) {
+                result = await repo.searchPokemonByName(this.dexSearchInput.value, this.pageNumber, this.pageSize);
             } else {
-                result = await repo.getAllPokemon(pageNumber, pageSize);
+                result = await repo.getAllPokemon(this.pageNumber, this.pageSize);
             }
-
-            //save pos
-            const lastElement = scrollable.querySelector('.card:last-child') as HTMLElement;
-            const lastElementOffset = lastElement.offsetTop;
-            const previousScrollTop = scrollable.scrollTop;
     
-            renderPokemon(result);
-    
-            //load pos
-            const newLastElementOffset = lastElement.offsetTop;
-            scrollable.scrollTop = previousScrollTop + (newLastElementOffset - lastElementOffset);
-
-            //allow more load events
-            bottomReached = false;
+            this.renderPokemon(result, reset);
         }
-    });
     
+        private renderPokemon(pokemonArray: Pokemon[], reset: boolean = false): void {
+            if (reset) {
+                this.container.innerHTML = "";
+            }
+    
+            pokemonArray.forEach((pokemon) => {
+                const pokemonCard = PokemonCard(pokemon);
+                this.container.appendChild(pokemonCard);
+            });
+    
+            this.adjustSpacer();
+        }
+        
+        //for discord style "filling the space in" lazy loading
+        private adjustSpacer(): void {
+            const containerBottom = this.container.getBoundingClientRect().bottom;
+            const viewportHeight = window.innerHeight;
+            const remainingHeight = viewportHeight - containerBottom;
+            
+            if (remainingHeight > 0) {
+                this.spacer.style.height = Math.max(remainingHeight, 0) + 'px';
+            } else {
+                this.spacer.style.height = '0px';
+            }
+        }
+        
+        //javascript nonsense
+        private setupEventListeners() {
+            this.dexSearchInput.addEventListener("input", this.onSearchInput.bind(this));
+            this.main.addEventListener("scroll", this.onScroll.bind(this));
+        }
+    
+        private async onSearchInput() {
+            this.isSearched = this.dexSearchInput.value.length > 0;
+            this.pageNumber = 1;
+            await this.loadPage(true);
+        }
+    
+        private async onScroll() {
+            if (this.bottomReached) return;
+    
+            const threshold = 400;
+            const scrollable = this.main;
+    
+            if (Math.abs(scrollable.scrollHeight - scrollable.scrollTop - scrollable.clientHeight) <= threshold) {
+
+                //checks first before trying to load more
+                const maxPageNumber = Math.ceil(this.totalPokemonCount / this.pageSize);
+                if (this.pageNumber >= maxPageNumber) {
+                    this.bottomReached = true;
+                    return;
+                }
+    
+                this.pageNumber++;
+                this.bottomReached = true;
+    
+                //save pos
+                const lastElement = scrollable.querySelector('.card:last-child') as HTMLElement;
+                const lastElementOffset = lastElement.offsetTop;
+                const previousScrollTop = scrollable.scrollTop;
+    
+                await this.loadPage();
+    
+                //load pos
+                const newLastElementOffset = lastElement.offsetTop;
+                scrollable.scrollTop = previousScrollTop + (newLastElementOffset - lastElementOffset);
+    
+                //allow more load events
+                this.bottomReached = false;
+            }
+        }
+    }
     
 
+    const pokemonLoader = new PokemonLoader('container', 'spacer', 'main', 'dex-search');
+    
 }

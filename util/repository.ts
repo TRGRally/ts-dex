@@ -630,3 +630,25 @@ export function getMegaIconSmall(): string {
 
 
 
+export function getTotalPokemonCount(): Promise<number> {
+    return new Promise((resolve, reject) => {
+        openDB().then((db) => {
+            const transaction = db.transaction('pokemon', 'readonly');
+            const pokemonStore = transaction.objectStore('pokemon');
+
+            const request = pokemonStore.count();
+
+            request.onerror = (event) => {
+                console.error('Request error:', event);
+                reject(event);
+            };
+
+            request.onsuccess = (event) => {
+                resolve(request.result);
+            };
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+
