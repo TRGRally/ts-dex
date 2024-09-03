@@ -88,18 +88,18 @@ export function PokemonStats(pokemon: Pokemon): HTMLElement {
     statsElement.innerHTML = `
         <div class="stat">
             <div class="stat-name">ATK</div>
-            <div class="stat-value">${stats.attack}</div>
             <progress class="stat-bar" value="${stats.attack}" max="300"></progress>
+            <div class="stat-value">${stats.attack}</div>
         </div>
         <div class="stat">
             <div class="stat-name">DEF</div>
-            <div class="stat-value">${stats.defense}</div>
             <progress class="stat-bar" value="${stats.defense}" max="300"></progress>
+            <div class="stat-value">${stats.defense}</div>
         </div>
         <div class="stat">
             <div class="stat-name">HP </div>
-            <div class="stat-value">${stats.stamina}</div>
             <progress class="stat-bar" value="${stats.stamina}" max="300"></progress>
+            <div class="stat-value">${stats.stamina}</div>
         </div>
     `;
 

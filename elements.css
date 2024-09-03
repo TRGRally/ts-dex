@@ -386,6 +386,34 @@
 }
 
 
+.stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    .stat {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        justify-items: center;
+        gap: 0.5rem;
+
+        .stat-name {
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-weight: 600;
+        }
+
+        .stat-bar {
+            flex-grow: 1;
+        }
+    }
+
+}
+
+
 .moves {
     display: flex;
     flex-direction: column;

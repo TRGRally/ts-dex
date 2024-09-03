@@ -28,6 +28,13 @@ export default function initPokemon(
     const pokemonShowcase = PokemonShowcase(pokemon);
     showcase.replaceWith(pokemonShowcase);
 
+
+    const pokemonTitle = document.querySelector(".info > .title") as HTMLElement;
+    const name = pokemonTitle.querySelector(".name") as HTMLElement;
+    const dexNr = pokemonTitle.querySelector(".dex-nr") as HTMLElement;
+    name.textContent = pokemon.name;
+    dexNr.textContent = `#${pokemon.dexNr}`;
+
     const formSelector = document.querySelector(".form-selector") as HTMLElement;
     pokemon.regionForms.forEach((form) => {
         const formOption = document.createElement('input');
@@ -51,14 +58,6 @@ export default function initPokemon(
     if (pokemon.regionForms.length < 1) {
         formSelector.style.display = 'none';
     }
-
-    const pokemonTitle = document.querySelector(".info > .title") as HTMLElement;
-    const name = pokemonTitle.querySelector(".name") as HTMLElement;
-    const dexNr = pokemonTitle.querySelector(".dex-nr") as HTMLElement;
-    name.textContent = pokemon.name;
-    dexNr.textContent = `#${pokemon.dexNr}`;
-
-
 
     const stats = document.querySelector(".stats") as HTMLElement;
     const pokemonStats = PokemonStats(pokemon);
