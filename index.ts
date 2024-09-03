@@ -16,9 +16,13 @@ if (navigator.storage && navigator.storage.persist) {
     console.log(`Persisted storage granted: ${isPersisted}`);
 }
 
-// repo.getAllPokemon().then((pokemon) => {
-//     console.log(pokemon);
-// });
+repo.getAllPokemon(1, 1400).then((pokemon) => {
+    console.log(pokemon);
+});
+
+repo.getPokemonByRegion(repo.Region.Galar, 1, 1000).then((types) => {
+    console.log(types);
+});
 
 
 document.addEventListener('click', function(event) {
@@ -28,5 +32,5 @@ document.addEventListener('click', function(event) {
     }
 });
 
-let poo = repo.getTypeIcon("POKEMON_TYPE_FIRE")
+let poo = repo.getTypeIcon("POKEMON_TYPE_FIRE");
 console.log(poo);

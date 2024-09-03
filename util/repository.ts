@@ -1,7 +1,6 @@
 enum BaseURL {
     PokedexAPI = 'https://pokemon-go-api.github.io/pokemon-go-api/api',
     PokeMiners = 'https://raw.githubusercontent.com/PokeMiners/pogo_assets/master'
-
 }
 
 enum sortBy {
@@ -14,7 +13,17 @@ enum sortDir {
     Desc = "desc"
 }
 
-
+export enum Region {
+    Kanto = "KANTO",
+    Johto = "JOHTO",
+    Hoenn = "HOENN",
+    Sinnoh = "SINNOH",
+    Unova = "UNOVA",
+    Kalos = "KALOS",
+    Alola = "ALOLA",
+    Galar = "GALARIAN",
+    Paldea = "PALDEA",
+}
 
 
 export async function getJson(apiUrl: string): Promise<any> {
@@ -485,6 +494,39 @@ export function getPokemonById(formId: string): Promise<Pokemon> {
             request.onsuccess = (event) => {
                 resolve(request.result);
             };
+        });
+    });
+}
+
+export function getPokemonByRegion(region: Region, page: number, pageSize: number): Promise<Pokemon[]> {
+    return new Promise((resolve, reject) => {
+        openDB().then((db) => {
+            const transaction = db.transaction('pokemon', 'readonly');
+            const pokemonStore = transaction.objectStore('pokemon');
+
+            const request = pokemonStore.getAll();
+
+            request.onerror = (event) => {
+                console.error('Request error:', event);
+                reject(event);
+            };
+
+            request.onsuccess = (event) => {
+                const allPokemon = request.result;
+                const regionPokemon = allPokemon.filter((pokemon) => {
+                    //form id has _REGIONNAME at the end
+                    return pokemon.formId.endsWith(`_${region}`);
+                });
+
+                const startIndex = (page - 1) * pageSize;
+                const stopIndex = startIndex + pageSize;
+
+                const paginatedPokemon = regionPokemon.slice(startIndex, stopIndex);
+
+                resolve(paginatedPokemon);
+            };
+        }).catch((error) => {
+            reject(error);
         });
     });
 }
