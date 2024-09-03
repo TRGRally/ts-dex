@@ -423,13 +423,21 @@ function openDB(): Promise<IDBDatabase> {
     });
 }
 
-export function getAllPokemon(): Promise<Pokemon[]> {
+export function getAllPokemon(page: number, pageSize: number): Promise<Pokemon[]> {
     return new Promise((resolve, reject) => {
         openDB().then((db) => {
             const transaction = db.transaction('pokemon', 'readonly');
             const pokemonStore = transaction.objectStore('pokemon');
 
-            const request = pokemonStore.getAll();
+            //whoops
+            const dexNrIndex = pokemonStore.index('dexNr');
+
+            const startIndex = (page - 1) * pageSize;
+            const stopIndex = startIndex + pageSize;
+
+            const request = dexNrIndex.openCursor();
+            const paginatedPokemon: Pokemon[] = [];
+            let currentIndex = 0;
 
             request.onerror = (event) => {
                 console.error('Request error:', event);
@@ -437,12 +445,29 @@ export function getAllPokemon(): Promise<Pokemon[]> {
             };
 
             request.onsuccess = (event) => {
-                console.log('Request time:', event.timeStamp);
-                resolve(request.result);
+                const cursor = (event.target as IDBRequest<IDBCursorWithValue>).result;
+                if (cursor) {
+                    if (currentIndex >= startIndex && currentIndex < stopIndex) {
+                        paginatedPokemon.push(cursor.value);
+                    }
+
+                    currentIndex++;
+
+                    if (currentIndex < stopIndex) {
+                        cursor.continue();
+                    } else {
+                        resolve(paginatedPokemon);
+                    }
+                } else {
+                    resolve(paginatedPokemon);
+                }
             };
+        }).catch((error) => {
+            reject(error);
         });
     });
 }
+
 
 export function getPokemonById(formId: string): Promise<Pokemon> {
     return new Promise((resolve, reject) => {
@@ -464,14 +489,9 @@ export function getPokemonById(formId: string): Promise<Pokemon> {
     });
 }
 
-//prioritises matches that start with the query, then contains
-export function searchPokemonByName(rawQuery: string): Promise<Pokemon[]> {
+//prioritises matches that start with the query, then contains at pos 0, 1, 2 ... etc.
+export function searchPokemonByName(rawQuery: string, page: number, pageSize: number): Promise<Pokemon[]> {
     return new Promise(async (resolve, reject) => {
-
-        if (rawQuery.length < 1) {
-            const allPokemon = await getAllPokemon();
-            resolve(allPokemon);
-        }
 
         const startTime = performance.now();
 
@@ -489,6 +509,10 @@ export function searchPokemonByName(rawQuery: string): Promise<Pokemon[]> {
 
             const matchedPokemon: { pokemon: Pokemon, rank: number }[] = [];
 
+            const startIndex = (page - 1) * pageSize;
+            const stopIndex = startIndex + pageSize;
+
+            let count = 0;
             index.openCursor().onsuccess = (event) => {
                 const cursor = (event.target as IDBRequest<IDBCursorWithValue>).result;
                 if (cursor) {
@@ -497,12 +521,14 @@ export function searchPokemonByName(rawQuery: string): Promise<Pokemon[]> {
                     const indexOfQuery = nameLowerCase.indexOf(query);
 
                     if (indexOfQuery !== -1) {
-                        matchedPokemon.push({ pokemon, rank: indexOfQuery });
+                        if (count >= startIndex && count < stopIndex) {
+                            matchedPokemon.push({ pokemon, rank: indexOfQuery });
+                        }
+                        count++;
                     }
 
                     cursor.continue();
                 } else {
-
                     matchedPokemon.sort((a, b) => a.rank - b.rank);
                     const sortedPokemon = matchedPokemon.map(entry => entry.pokemon);
 
@@ -519,6 +545,7 @@ export function searchPokemonByName(rawQuery: string): Promise<Pokemon[]> {
             reject(error);
         });
     });
+
 }
 
 export function isDBEmpty(): Promise<boolean> {

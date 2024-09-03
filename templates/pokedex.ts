@@ -14,32 +14,53 @@ export default function initPokedex(
     console.log("pokedex");
     sidebar.selectPokedex();
 
-    const container = document.getElementById('container');
+    let pageNumber = 1; //will reset on input change 
+    let pageSize = 100;
+    let isSearched: boolean = false;
 
-    repo.getAllPokemon().then((allPokemon) => {
-        allPokemon.sort((a, b) => a.dexNr - b.dexNr);
+    const container = document.getElementById('container'); //where the card are appended to
+    const spacer = document.getElementById('spacer'); //discord style continual scroll when lazy loading
+    const main = document.querySelector('main'); //the scrollable element
+
+    repo.getAllPokemon(pageNumber, pageSize).then((allPokemon) => {
         renderPokemon(allPokemon);
     });
-    
-    function renderPokemon(pokemonArray: Pokemon[]): void {
 
-        container.innerHTML = "";
-    
+    function renderPokemon(pokemonArray: Pokemon[], reset: boolean = false): void {
+        
+        if (reset) {
+            container.innerHTML = "";
+        }
+
         pokemonArray.forEach((pokemon) => {
-    
-            
             const pokemonCard = PokemonCard(pokemon);
-            
-    
             container.appendChild(pokemonCard);
         });
+
+        const remainingHeight = window.innerHeight - container.getBoundingClientRect().bottom;
+        spacer.style.height = Math.max(remainingHeight, 400) + 'px';
     }
-    
+
+
     const dexSearchInput = document.getElementById("dex-search") as HTMLInputElement
     dexSearchInput.addEventListener("input", async (e) => {
-        let result = await repo.searchPokemonByName(dexSearchInput.value)
+
+        if (dexSearchInput.value.length < 1) {
+            isSearched = false;
+        } else {
+            isSearched = true;
+        }
+        pageNumber = 1;
+
+        let result: Pokemon[];
+        if (isSearched) {
+            result = await repo.searchPokemonByName(dexSearchInput.value, pageNumber, pageSize);
+        } else {
+            result = await repo.getAllPokemon(pageNumber, pageSize);
+        }
+
         console.log(result)
-        renderPokemon(result);
+        renderPokemon(result, true);
     });
 
     const dexSelector = document.querySelector(".dex-selector") as HTMLElement;
@@ -59,5 +80,45 @@ export default function initPokedex(
 
         
     });
+
+    //lazy loading scroll
+    let bottomReached = false;
+    main.addEventListener("scroll", async (e) => {
+        const scrollable = e.target as HTMLElement;
+
+        if (bottomReached) {
+            return;
+        }
+
+        const threshold = 400;
+        if (Math.abs(scrollable.scrollHeight - scrollable.scrollTop - scrollable.clientHeight) <= threshold) {
+            console.log("bottom reached");
+            bottomReached = true;
+    
+            pageNumber++;
+            let result: Pokemon[];
+            if (isSearched) {
+                result = await repo.searchPokemonByName(dexSearchInput.value, pageNumber, pageSize);
+            } else {
+                result = await repo.getAllPokemon(pageNumber, pageSize);
+            }
+
+            //save pos
+            const lastElement = scrollable.querySelector('.card:last-child') as HTMLElement;
+            const lastElementOffset = lastElement.offsetTop;
+            const previousScrollTop = scrollable.scrollTop;
+    
+            renderPokemon(result);
+    
+            //load pos
+            const newLastElementOffset = lastElement.offsetTop;
+            scrollable.scrollTop = previousScrollTop + (newLastElementOffset - lastElementOffset);
+
+            //allow more load events
+            bottomReached = false;
+        }
+    });
+    
+    
 
 }
