@@ -182,12 +182,21 @@ export function PokemonShowcase(pokemon: Pokemon): HTMLElement {
         </div>
     `;
 
+    const types = document.createElement('div');
+    types.classList.add('types');
+    types.innerHTML = `
+        <img class="type" src="${repo.getTypeIcon(pokemon.type1)}" />
+        ${pokemon.type2 ? `<img class="type" src="${repo.getTypeIcon(pokemon.type2)}" />` : ""}
+    `;
+
 
     showcase.innerHTML = `
         ${family}
         <img draggable="false" src="${pokemon.imageUrl || "/assets/unknown.png"}" />
         ${pokemon.megaEvolutions.length > 0 ? `<img class="mega-icon" draggable="false" src="${repo.getMegaIconSmall()}" />` : ''}
     `;
+
+    showcase.appendChild(types);
 
     return showcase;
 }

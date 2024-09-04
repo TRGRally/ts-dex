@@ -86,10 +86,6 @@ export default function initPokemon(
     
 
 
-    const types = document.querySelector(".types") as HTMLElement;
-    types.innerHTML = `
-        <img class="type" src="${repo.getTypeIcon(pokemon.type1)}" />
-        ${pokemon.type2 ? `<img class="type" src="${repo.getTypeIcon(pokemon.type2)}" />` : ""}
-    `;
+    
     
 }
