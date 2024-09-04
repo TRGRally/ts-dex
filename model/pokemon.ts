@@ -17,6 +17,12 @@ type Pokemon = {
     regionForms: string[];
     evolutions: Evolution[];
     megaEvolutions: MegaEvolution[];
+    familyId?: string;
+    thirdMoveCost?: ThirdMoveCost;
+    height?: number;
+    weight?: number;
+    heightStdDev?: number;
+    weightStdDev?: number;
 }
 
 type MegaEvolution = {
@@ -58,6 +64,11 @@ type MoveGymStats = {
     power: number;
     energy: number;
     durationMs: number;
+}
+
+type ThirdMoveCost = {
+    stardust: number;
+    candy: number;
 }
 
 type Evolution = {

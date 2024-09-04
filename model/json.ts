@@ -110,3 +110,18 @@ type PokemonJson = {
     quickMoves: { [key: string]: MoveJson };
     eliteQuickMoves: { [key: string]: MoveJson };
 }
+
+
+
+type PokeBattlerJson = {
+    pokemonId: string;
+    familyId: string;
+    pokedexHeightM: number;
+    pokedexWeightKg: number;
+    heightStdDev: number;
+    weightStdDev: number;
+    thirdMove: {
+        stardustToUnlock: number;
+        candyToUnlock: number;
+    }
+}
