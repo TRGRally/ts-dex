@@ -1,6 +1,7 @@
 enum BaseURL {
     PokedexAPI = 'https://pokemon-go-api.github.io/pokemon-go-api/api',
-    PokeMiners = 'https://raw.githubusercontent.com/PokeMiners/pogo_assets/master'
+    PokeMiners = 'https://raw.githubusercontent.com/PokeMiners/pogo_assets/master',
+    PokeBattler = 'https://fight.pokebattler.com'
 }
 
 enum sortBy {
@@ -26,9 +27,9 @@ export enum Region {
 }
 
 
-export async function getJson(apiUrl: string): Promise<any> {
+export async function getJson(apiUrl: string, baseUrl: BaseURL = BaseURL.PokedexAPI): Promise<any> {
 
-    const fullUrl = `${BaseURL.PokedexAPI}/${apiUrl}`;
+    const fullUrl = `${baseUrl}/${apiUrl}`;
 
     console.log('Fetching:', fullUrl);
 
@@ -58,6 +59,11 @@ export function getWeatherIcon(assetName: string): string {
     return `${BaseURL.PokeMiners}/Images/Weather/${assetName}.png`;
 }
 
+async function fetchCurrentRaidsJson(): Promise<BreakingNewsJson[]> {
+    const data = await getJson("/raids", BaseURL.PokeBattler);
+    console.log('raids:', data.breakingNews);
+    return data.breakingNews;
+}
 
 async function fetchPokemonJson(): Promise<PokemonJson[]> {
     let data = await getJson("pokedex.json");
@@ -306,6 +312,40 @@ function getPokemonArray(pokemonJsonArray: PokemonJson[]): Pokemon[] {
 
 
     return pokemonArray;
+}
+
+
+export async function getRaids(): Promise<Raid[]> {
+
+    const raidsJson = await fetchCurrentRaidsJson();
+
+    const formIds = new Set<string>();
+    raidsJson.forEach((raidJson) => {
+        formIds.add(raidJson.pokemon);
+    });
+
+    const raidPokemon = await Promise.all(Array.from(formIds).map((formId) => {
+        return getPokemonById(formId);
+    }));
+
+    const raids = raidsJson.map((raidJson) => {
+        const pokemon = raidPokemon.find((pokemon) => pokemon.formId === raidJson.pokemon);
+        if (!pokemon) {
+            console.error(`Pokemon with formId ${raidJson.pokemon} not found in raidPokemon array.`);
+            return null; // or handle this case as needed
+        }
+        return {
+            pokemon: pokemon,
+            shiny: raidJson.shiny,
+            tier: raidJson.tier,
+            startDate: raidJson.startDate,
+            endDate: raidJson.endDate,
+            activeDate: raidJson.activeDate
+        } as Raid;
+    }).filter(raid => raid !== null); // Filter out any null values
+    
+    return raids;
+
 }
 
 

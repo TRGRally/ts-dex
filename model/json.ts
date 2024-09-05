@@ -111,8 +111,6 @@ type PokemonJson = {
     eliteQuickMoves: { [key: string]: MoveJson };
 }
 
-
-
 type PokeBattlerJson = {
     pokemonId: string;
     familyId: string;
@@ -125,3 +123,19 @@ type PokeBattlerJson = {
         candyToUnlock: number;
     }
 }
+
+type ContainsBreakingNewsJson = {
+    breakingNews: BreakingNewsJson;
+}
+
+type BreakingNewsJson = {
+    id: number;
+    pokemon: string;
+    shiny: boolean;
+    tier: string;
+    type: string;
+    localTime: boolean;
+    startDate: number;
+    endDate: number;
+    activeDate: number;
+};

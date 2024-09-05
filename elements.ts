@@ -166,7 +166,6 @@ export function PokemonMoveset(moves: PokemonMove[]): HTMLElement {
 }
 
 
-
 export function PokemonShowcase(pokemon: Pokemon): HTMLElement {
     const showcase = document.createElement('div');
     showcase.classList.add('showcase');
@@ -199,4 +198,19 @@ export function PokemonShowcase(pokemon: Pokemon): HTMLElement {
     showcase.appendChild(types);
 
     return showcase;
+}
+
+
+
+export function RaidCard(raid: Raid): HTMLElement {
+    const raidCard = document.createElement('a');
+    raidCard.classList.add('card');
+    raidCard.innerHTML = `
+        <img draggable="false" src="${raid.pokemon.imageUrl || "/assets/unknown.png"}" />
+        <div class="card-title"><span>${raid.pokemon.name}</span></div>
+    `;
+
+    raidCard.setAttribute('href', `/raids/${raid.pokemon.formId.toLowerCase()}`);
+
+    return raidCard;
 }

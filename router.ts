@@ -2,6 +2,7 @@ import * as repo from "./util/repository.js";
 import * as sidebar from "./util/sidebar.js";
 import initPokedex from "./templates/pokedex.js";
 import initPokemon from "./templates/pokemon.js";
+import initEvents from "./templates/events.js";
 
 const routes = {
     "/": {
@@ -10,10 +11,12 @@ const routes = {
     },
     "/events": {
         template: "/templates/events.html",
-        script: (params, routeData) => {
-            console.log("events");
-            sidebar.selectEvents();
+        script: initEvents,
+        resolve: async () => {
+            const raids = await repo.getRaids();
+            return raids;
         }
+
     },
     "/pokedex/:id": {
         template: "/templates/pokemon.html",
