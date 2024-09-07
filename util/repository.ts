@@ -339,7 +339,7 @@ export async function getRaids(): Promise<Raid[]> {
     const raids = raidsJson.map((raidJson) => {
         const pokemon = raidPokemon.find((pokemon) => pokemon.formId === raidJson.pokemon);
         if (!pokemon) {
-            console.error(`Pokemon with formId ${raidJson.pokemon} not found in raidPokemon array.`);
+            console.warn(`Pokemon with formId ${raidJson.pokemon} not found in raidPokemon array.`);
             return null;
         }
         return {
@@ -700,7 +700,7 @@ export function isDBStale() {
     const currentTime = new Date().getTime();
     const lastUpdateDate = new Date(lastUpdate).getTime();
     const timeSinceUpdate = currentTime - lastUpdateDate;
-    const oneHour = 1000;
+    const oneHour = 1000 * 60 * 60;
 
     const isDbStale = timeSinceUpdate > oneHour;
     console.log('Time since last update:', timeSinceUpdate);

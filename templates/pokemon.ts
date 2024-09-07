@@ -58,8 +58,11 @@ export default function initPokemon(
     }
 
     const stats = document.querySelector(".stats") as HTMLElement;
-    const pokemonStats = PokemonStats(pokemon);
-    stats.replaceWith(pokemonStats);
+    // const pokemonStats = PokemonStats(pokemon);
+    // stats.replaceWith(pokemonStats);
+
+    stats.remove(); // for now until there's actual UI for it
+
 
     const quickMoves = document.querySelector(".quick-moves") as HTMLElement;
     const moveset = PokemonMoveset(pokemon.quickMoves);

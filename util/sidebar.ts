@@ -1,17 +1,28 @@
-const navLinks = document.getElementsByClassName('nav-link'); //live HTMLCollection
+const navLinkSelector = '.nav-item';
 
 export function selectPokedex(): void {
     deselectAllNavLinks();
-    document.getElementById('pokedex-nav').classList.add('active');
+    const pokedexNav = document.getElementById('pokedex-nav');
+    if (pokedexNav) {
+        pokedexNav.classList.add('active');
+    }
 }
 
-export function selectEvents(): void  {
+export function selectEvents(): void {
     deselectAllNavLinks();
-    document.getElementById('events-nav').classList.add('active');
+    const eventsNav = document.getElementById('events-nav');
+    if (eventsNav) {
+        eventsNav.classList.add('active');
+    }
 }
 
-function deselectAllNavLinks(): void  {
-    for (let i = 0; i < navLinks.length; i++) {
-        navLinks[i].classList.remove('active');
+function deselectAllNavLinks(): void {
+    const navLinks = document.querySelectorAll(navLinkSelector);
+    if (navLinks.length > 0) {
+        navLinks.forEach((link) => {
+            link.classList.remove('active');
+        });
+    } else {
+        console.error("No nav links found with selector:", navLinkSelector);
     }
 }

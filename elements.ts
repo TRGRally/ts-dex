@@ -71,7 +71,7 @@ export function PokemonCard(pokemon: Pokemon): HTMLElement {
     const pokemonCard = document.createElement('a');
     pokemonCard.classList.add('card');
     pokemonCard.innerHTML = `
-        <img draggable="false" src="${ hasImage ? pokemon.imageUrl : '/assets/unknown.png' }" />
+        <img draggable="false" src="${ hasImage ? pokemon.imageUrl : '/assets/unknown.png' }" alt="${pokemon.name}" />
         <div class="type-icons"><img src="${repo.getTypeIcon(pokemon.type1)}" />${pokemon.type2 ? `<img src="${repo.getTypeIcon(pokemon.type2)}" />` : ""}</div>
         <div class="card-title"><span class="dexNr">#${pokemon.dexNr}</span> <span>${pokemon.name}</span></div>
         ${attributes}
@@ -164,7 +164,10 @@ export function PokemonMoveset(moves: PokemonMove[]): HTMLElement {
         }
         return 0;
     });
-
+    const title = document.createElement('div');
+    title.classList.add('title');
+    title.textContent = "Moves";
+    moveset.appendChild(title);
     moves.forEach((move) => {
         moveset.appendChild(PokemonMove(move));
     });

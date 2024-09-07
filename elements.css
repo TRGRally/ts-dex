@@ -444,10 +444,18 @@
     flex-direction: column;
     gap: 0.25rem;
     border-radius: 0.5rem;
+
+    .title {
+        font-size: 16px;
+        font-weight: 600;
+        padding: 0.25rem;
+        align-self: flex-start;
+    }
 }
 
 .moveset:hover {
-    background-color: var(--bg2);
+    background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+    outline: solid 2px color-mix(in srgb, var(--primary) 25%, transparent);
 }
 
 .move {
