@@ -1,6 +1,6 @@
 import * as repo from "./util/repository.js";
 
-// await repo.initDB();
+await repo.initDB();
 let dbEmpty = await repo.isDBEmpty();
 console.log("empty", dbEmpty);
     console.log("stale", repo.isDBStale());

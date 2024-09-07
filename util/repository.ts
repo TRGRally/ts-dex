@@ -129,6 +129,10 @@ function getTypesArray(typesJsonArray: TypeJson[]): Type[] {
 
 function getPokemonArray(pokemonJsonArray: PokemonJson[]): Pokemon[] {
 
+    function PokemonImageUrlTo256x(imageUrl: string): string {
+        return imageUrl.replace('/Images/Pokemon/', '/Images/Pokemon%20-%20256x256/');
+    }
+
     function convertPokemonJsonToPokemon(pokemonJson: PokemonJson): Pokemon {
         const id = pokemonJson.id;
         const formId = pokemonJson.formId;
@@ -137,7 +141,7 @@ function getPokemonArray(pokemonJsonArray: PokemonJson[]): Pokemon[] {
         const type1 = pokemonJson.primaryType.type;
         const type2 = pokemonJson.secondaryType?.type;
         const generation = pokemonJson.generation;
-        const imageUrl = pokemonJson.assets?.image;
+        const imageUrl = pokemonJson.assets?.image ? PokemonImageUrlTo256x(pokemonJson.assets.image) : undefined;
         const shinyImageUrl = pokemonJson.assets?.shinyImage || null;
         const stats = pokemonJson.stats;
         const pokemonClass = pokemonJson.pokemonClass || null;
