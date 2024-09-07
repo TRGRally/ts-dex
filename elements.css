@@ -27,6 +27,7 @@
         white-space: nowrap;
         overflow-x: clip;
         text-overflow: ellipsis;
+        text-align: center;
 
         .dexNr {
             opacity: 0.75;
