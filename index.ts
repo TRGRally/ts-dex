@@ -1,12 +1,27 @@
 import * as repo from "./util/repository.js";
 
+
 //await repo.initDB();
 let dbEmpty = await repo.isDBEmpty();
 console.log("empty", dbEmpty);
-    console.log("stale", repo.isDBStale());
+console.log("stale", repo.isDBStale());
+
 if (dbEmpty || repo.isDBStale()) {
     console.warn("DB is empty or stale, refreshing...");
     await repo.initDB();
+    console.log("DB refreshed");
+    window.location.reload();
+
+} else {
+
+    repo.getAllPokemon(1, 1400).then((pokemon) => {
+        console.log(pokemon);
+    });
+    
+    repo.getPokemonByRegion(repo.Region.Galar, 1, 1000).then((types) => {
+        console.log(types);
+    });
+    
 }
 
 
@@ -16,13 +31,7 @@ if (navigator.storage && navigator.storage.persist) {
     console.log(`Persisted storage granted: ${isPersisted}`);
 }
 
-repo.getAllPokemon(1, 1400).then((pokemon) => {
-    console.log(pokemon);
-});
 
-repo.getPokemonByRegion(repo.Region.Galar, 1, 1000).then((types) => {
-    console.log(types);
-});
 
 
 document.addEventListener('click', function(event) {
