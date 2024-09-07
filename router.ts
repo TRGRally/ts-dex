@@ -46,36 +46,50 @@ class Router {
     private routes: { [key: string]: Route };
     private params: { [key: string]: string };
     private routeData: any;
+    private templates: { [key: string]: string };
 
     constructor(routes: { [key: string]: Route }) {
         this.routes = routes;
         this.params = {};
         this.routeData = {};
+        this.templates = {};
         this.init();
     }
 
-    private init(): void {
+    private async init(): Promise<void> {
         window.addEventListener('popstate', () => this.handleLocation());
-        this.handleLocation();
+        document.addEventListener('click', this.handleLinkClick.bind(this));
+        await this.preloadTemplates();
+        await this.handleLocation();
         console.log("[Router] Init");
+    }
+
+    private async preloadTemplates(): Promise<void> {
+        const templatePaths = Object.values(this.routes).map(route => route.template);
+        const uniqueTemplatePaths = Array.from(new Set(templatePaths));
+
+        await Promise.all(uniqueTemplatePaths.map(async (path) => {
+            const html = await fetch(path).then((data) => data.text());
+            this.templates[path] = html;
+        }));
     }
 
     public addRoute(path: string, config: Route): void {
         this.routes[path] = config;
     }
 
-        private matchRoute(path: string): Route | null {
+    private matchRoute(path: string): Route | null {
         for (let routePath of Object.keys(this.routes)) {
             const paramNames: string[] = [];
             const regexPath = routePath.replace(/:[^\s/]+/g, (match) => {
                 paramNames.push(match.slice(1));
                 return "([^/]+)";
             });
-    
+
             const regex = new RegExp(`^${regexPath}$`);
             console.log(`Matching path: ${path} against regex: ${regex}`);
             const match = path.match(regex);
-    
+
             if (match) {
                 this.params = {};
                 match.slice(1).forEach((value, index) => {
@@ -85,7 +99,7 @@ class Router {
                 return this.routes[routePath];
             }
         }
-    
+
         console.log(`No match found for path: ${path}`);
         return this.routes["404"] || null;
     }
@@ -99,7 +113,7 @@ class Router {
             return;
         }
 
-        //prefetch if specified
+        //run prefetch if specified
         if (route.resolve) {
             try {
                 this.routeData = await route.resolve(this.params);
@@ -109,15 +123,19 @@ class Router {
                 return;
             }
         }
-        //loading dom content from template
-        const html = await fetch(route.template).then((data) => data.text());
-        document.querySelector("main")!.innerHTML = html;
+
+        //loading from template in memory
+        const html = this.templates[route.template];
+        const mainElement = document.querySelector("main");
+        if (mainElement) {
+            mainElement.innerHTML = html;
+        }
 
         //script after dom content loaded
         if (route.script) {
             route.script(this.params, this.routeData);
         }
-    
+
         if (this.params.id) {
             this.displayPokemonDetails(this.params.id);
         }
@@ -129,11 +147,31 @@ class Router {
     }
 
     private load404(): void {
-        document.querySelector("main")!.innerHTML = "<h1>404 - Not Found</h1>";
+        const mainElement = document.querySelector("main");
+        if (mainElement) {
+            mainElement.innerHTML = "<h1>404 - Not Found</h1>";
+        }
     }
 
     private displayPokemonDetails(pokemonID: string): void {
         console.log("Displaying details for Pokémon ID:", pokemonID);
+    }
+
+    private handleLinkClick(event: MouseEvent): void {
+        let target = event.target as HTMLElement;
+
+        //crazy way to find if we are actually inside a link but just clicking on a child element
+        while (target && target.tagName !== 'A') {
+            target = target.parentElement as HTMLElement;
+        }
+
+        if (target && target.tagName === 'A' && target.getAttribute('href')) {
+            event.preventDefault();
+            const path = target.getAttribute('href');
+            if (path) {
+                this.navigateTo(path);
+            }
+        }
     }
 }
 

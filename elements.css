@@ -105,8 +105,13 @@
 
 }
 
+.card.unknown {
+    opacity: 0.5;
+}
+
 .card:hover {
     background-color: var(--bg2);
+    opacity: 1;
 
     .type-icons {
         opacity: 1;
@@ -340,8 +345,7 @@
     justify-content: flex-start;
 
     padding: 0;
-    padding-bottom: 0.75rem;
-    gap: 0.75rem;
+    gap: 0.5rem;
 
     border-radius: 8px 8px 0 0;
     background-repeat: no-repeat;
@@ -373,9 +377,13 @@
         position: absolute;
         height: 2rem;
         aspect-ratio: 1;
-        top: 0.5rem;
-        right: 0.5rem;
+        bottom: 0;
+        left: 0.25rem;
         filter: sepia(1) saturate(7) hue-rotate(284deg) drop-shadow(0 3px 3px rgba(0, 0, 0, 0.25));
+    }
+
+    .pokemon-image {
+        max-height: 256px;
     }
     
 }

@@ -327,8 +327,12 @@ export async function getRaids(): Promise<Raid[]> {
     raidsJson.forEach((raidJson) => {
         formIds.add(raidJson.pokemon);
     });
-
+    console.log('formIds:', formIds);
     const raidPokemon = await Promise.all(Array.from(formIds).map((formId) => {
+        //diabolical work around until mega forms are searchable
+        if (formId.includes('_MEGA')) {
+            formId = formId.replace('_MEGA', '');
+        }
         return getPokemonById(formId);
     }));
 
@@ -336,7 +340,7 @@ export async function getRaids(): Promise<Raid[]> {
         const pokemon = raidPokemon.find((pokemon) => pokemon.formId === raidJson.pokemon);
         if (!pokemon) {
             console.error(`Pokemon with formId ${raidJson.pokemon} not found in raidPokemon array.`);
-            return null; // or handle this case as needed
+            return null;
         }
         return {
             pokemon: pokemon,
@@ -346,7 +350,7 @@ export async function getRaids(): Promise<Raid[]> {
             endDate: raidJson.endDate,
             activeDate: raidJson.activeDate
         } as Raid;
-    }).filter(raid => raid !== null); // Filter out any null values
+    }).filter(raid => raid !== null);
     
     return raids;
 
@@ -399,6 +403,7 @@ export async function initDB(): Promise<void> {
         };
 
         request.onupgradeneeded = (event) => {
+            console.warn('Database upgrade needed:', event);
             const db = request.result;
 
             if (db.objectStoreNames.contains('pokemon')) {
@@ -423,16 +428,39 @@ export async function initDB(): Promise<void> {
             typeStore.createIndex("noDamageFrom", "noDamageFrom", { unique: false });
             typeStore.createIndex("weatherBoostName", "weatherBoost.name", { unique: false });
 
+            //populates object stores after upgrading
+            request.transaction.oncomplete = (event) => {
+                console.warn('Database upgrade complete:', event);
+            
+                const transaction = db.transaction(['pokemon', 'types'], 'readwrite');
+                const pokemonStore = transaction.objectStore('pokemon');
+                const typeStore = transaction.objectStore('types');
 
-            //just refresh the page to get new data (lazy lol)
-            pokemonStore.transaction.oncomplete = (event) => {
-                location.reload();
+                const allPokemonArray = Array.from(allPokemonMap.values());
+                allPokemonArray.forEach((pokemon) => {
+                    pokemonStore.put(pokemon);
+                });
+
+                allTypesData.forEach((type) => {
+                    typeStore.put(type);
+                });
+
+                transaction.oncomplete = () => {
+                    console.warn('store populated');
+                    resolve();
+                };
+
+                transaction.onerror = (event) => {
+                    console.error('Transaction error:', event);
+                    reject(event);
+                };
+
             };
-
 
         };
 
         request.onsuccess = (event) => {
+            console.warn('Database opened:', event);
             const db = request.result;
             const transaction = db.transaction(['pokemon', 'types'], 'readwrite');
             const pokemonStore = transaction.objectStore('pokemon');
@@ -672,11 +700,14 @@ export function isDBStale() {
     const currentTime = new Date().getTime();
     const lastUpdateDate = new Date(lastUpdate).getTime();
     const timeSinceUpdate = currentTime - lastUpdateDate;
-    const oneHour = 1000 * 60 * 60;
+    const oneHour = 1000;
 
+    const isDbStale = timeSinceUpdate > oneHour;
     console.log('Time since last update:', timeSinceUpdate);
+    console.log('Threshold for stale:', oneHour);
+    console.log('DB stale:', isDbStale);
 
-    return timeSinceUpdate > oneHour;
+    return isDbStale;
     
 }
 

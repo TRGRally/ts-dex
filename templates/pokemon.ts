@@ -19,8 +19,9 @@ export default function initPokemon(
     console.log(pokemon);
 
     const background = document.querySelector(".background") as HTMLElement;
-    background.style.backgroundImage = `url('${repo.getTypeBackground(pokemon.type1)}')`;
-
+    background.style.backgroundImage = `url('${repo.getTypeBackground(pokemon.type1)}'), url('${repo.getTypeBackground(pokemon.type1)}')`;
+    background.style.backgroundSize = '316px, 100%';
+    background.style.backgroundRepeat = 'no-repeat, repeat';
 
 
     const showcase = document.querySelector(".showcase") as HTMLElement;
@@ -43,13 +44,10 @@ export default function initPokemon(
         formOption.name = 'form';
         formOption.id = form;
 
-        const formLabel = document.createElement('label');
+        const formLabel = document.createElement('a');
         formLabel.textContent = form;
-        formLabel.htmlFor = form;
-        
-        formOption.addEventListener('click', () => {
-            window.location.href = `/pokedex/${form.toLowerCase()}`;
-        });
+        formLabel.href = `/pokedex/${form.toLowerCase()}`;
+
 
         formSelector.appendChild(formOption);
         formSelector.appendChild(formLabel);
@@ -77,13 +75,12 @@ export default function initPokemon(
         evolutionCard.href = `/pokedex/${evolution.formId.toLowerCase()}`;
         evolutionCard.classList.add('evolution');
         evolutionCard.innerHTML = `
-            <div  class="evolution-name">${evolution.formId}</div>
+            <div class="evolution-name">${evolution.formId}</div>
             <div class="evolution-candy">${evolution.candies} candies</div>
         `;
         evolutions.appendChild(evolutionCard);
     });
 
-    
 
 
     

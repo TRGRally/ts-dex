@@ -65,10 +65,13 @@ export function PokemonCard(pokemon: Pokemon): HTMLElement {
             </div>
         `
     }
+
+    const hasImage = pokemon.imageUrl !== undefined;
+
     const pokemonCard = document.createElement('a');
     pokemonCard.classList.add('card');
     pokemonCard.innerHTML = `
-        <img draggable="false" src="${ pokemon.imageUrl || "/assets/unknown.png" }" />
+        <img draggable="false" src="${ hasImage ? pokemon.imageUrl : '/assets/unknown.png' }" />
         <div class="type-icons"><img src="${repo.getTypeIcon(pokemon.type1)}" />${pokemon.type2 ? `<img src="${repo.getTypeIcon(pokemon.type2)}" />` : ""}</div>
         <div class="card-title"><span class="dexNr">#${pokemon.dexNr}</span> <span>${pokemon.name}</span></div>
         ${attributes}
@@ -76,6 +79,10 @@ export function PokemonCard(pokemon: Pokemon): HTMLElement {
 
     pokemonCard.setAttribute('href', `/pokedex/${pokemon.formId.toLowerCase()}`);
     pokemonCard.style.setProperty('--bg-color', `${repo.typeColors[pokemon.type1]}ff`);
+
+    if (!hasImage) {
+        pokemonCard.classList.add('unknown');
+    }
 
     return pokemonCard;
 }
@@ -191,7 +198,7 @@ export function PokemonShowcase(pokemon: Pokemon): HTMLElement {
 
     showcase.innerHTML = `
         ${family}
-        <img draggable="false" src="${pokemon.imageUrl || "/assets/unknown.png"}" />
+        <img class="pokemon-image" draggable="false" src="${pokemon.imageUrl || "/assets/unknown.png"}" />
         ${pokemon.megaEvolutions.length > 0 ? `<img class="mega-icon" draggable="false" src="${repo.getMegaIconSmall()}" />` : ''}
     `;
 

@@ -30,7 +30,8 @@ export default function initPokedex(
             this.spacer = document.getElementById(spacerId);
             this.main = document.querySelector(mainSelector);
             this.dexSearchInput = document.getElementById(searchInputId) as HTMLInputElement;
-    
+            
+            console.log("init PokemonLoader");
             this.init();
         }
         

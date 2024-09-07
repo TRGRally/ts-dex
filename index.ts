@@ -1,6 +1,6 @@
 import * as repo from "./util/repository.js";
 
-await repo.initDB();
+//await repo.initDB();
 let dbEmpty = await repo.isDBEmpty();
 console.log("empty", dbEmpty);
     console.log("stale", repo.isDBStale());
@@ -31,6 +31,3 @@ document.addEventListener('click', function(event) {
         (event.target as HTMLElement).classList.toggle("active");
     }
 });
-
-let poo = repo.getTypeIcon("POKEMON_TYPE_FIRE");
-console.log(poo);
