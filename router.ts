@@ -26,7 +26,7 @@ const routes = {
             console.log(formID);
             const pokemon = repo.getPokemonById(formID.toUpperCase());
             //fetch regional forms if available
-         
+
             return pokemon;
         }
     },
@@ -124,6 +124,17 @@ class Router {
             }
         }
 
+        //pregressive view transition
+        if (document.startViewTransition) {
+            document.startViewTransition(async () => {
+                await this.loadContent(route);
+            });
+        } else {
+            await this.loadContent(route);
+        }
+    }
+
+    private async loadContent(route: Route): Promise<void> {
         //loading from template in memory
         const html = this.templates[route.template];
         const mainElement = document.querySelector("main");
