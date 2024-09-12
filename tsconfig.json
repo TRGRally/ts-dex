@@ -2,8 +2,12 @@
     "compilerOptions": {
         "target": "esnext",
         "strict": false,
-        "module": "esnext",
+        "module": "NodeNext",
         "sourceMap": true,
         "lib": ["esnext", "DOM", "DOM.Iterable"],
-    }
+        "outDir": "public",
+        "rootDir": "src"
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "public"]
 }
