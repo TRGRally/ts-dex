@@ -37,10 +37,8 @@ export default function initPokemon(
     background.style.backgroundImage = `url('${repo.getTypeBackground(pokemon.type1)}')`;
     background.style.backgroundSize = '316px';
     background.style.backgroundRepeat = 'no-repeat';
-
+    background.style.backgroundPosition = 'top left';
     
-    
-
 
     const pokemonTitle = document.querySelector(".info > .title") as HTMLElement;
     const name = pokemonTitle.querySelector(".name") as HTMLElement;

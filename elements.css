@@ -298,6 +298,21 @@
 
 }
 
+@media (max-width: 579px) {
+    .pokemon-layout {
+        grid-template-areas:
+            "brief"
+            "details";
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+
+        .background {
+            background-size: contain !important;
+            background-position: top center;
+        }
+    }
+}
+
 
 .info {
     flex-grow: 1;
