@@ -182,10 +182,10 @@ export function PokemonShowcase(pokemon: Pokemon): HTMLElement {
     const hasEvolutions = pokemon.evolutions.length > 0;
     const family = `
         <div class="family ${!hasEvolutions ? 'disabled' : ''}">
-            <a class="family-nav-item">
+            <a class="family-nav-item left">
                 <span class="material-symbols-rounded">arrow_back</span>
             </a>
-            <a class="family-nav-item">
+            <a class="family-nav-item right">
                 <span class="material-symbols-rounded">arrow_forward</span>
             </a>
         </div>
@@ -193,6 +193,7 @@ export function PokemonShowcase(pokemon: Pokemon): HTMLElement {
 
     const types = document.createElement('div');
     types.classList.add('types');
+    types.classList.add('type-tinted');
     types.innerHTML = `
         <img class="type" src="${repo.getTypeIcon(pokemon.type1)}" />
         ${pokemon.type2 ? `<img class="type" src="${repo.getTypeIcon(pokemon.type2)}" />` : ""}

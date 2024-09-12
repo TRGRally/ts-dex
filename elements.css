@@ -7,7 +7,7 @@
     background-repeat: no-repeat;
     background-position: center;
 
-    background-color: var(--bg1);
+    background-color: color-mix(in oklab, var(--bg1), transparent 75%);
     /* background-blend-mode: soft-light;
     background-image: radial-gradient(circle, var(--bg-color) 0%, transparent 100%); */
 
@@ -28,6 +28,8 @@
         overflow-x: clip;
         text-overflow: ellipsis;
         text-align: center;
+
+        color: var(--text-heading);
 
         .dexNr {
             opacity: 0.75;
@@ -82,6 +84,8 @@
 
             font-weight: 500;
 
+            color: var(--text-heading);
+
 
             .material-symbols-rounded {
                 font-size: 18px;
@@ -111,7 +115,7 @@
 }
 
 .card:hover {
-    background-color: var(--bg2);
+    background-color: color-mix(in srgb, var(--bg2), transparent 80%);
     opacity: 1;
 
     .type-icons {
@@ -120,7 +124,7 @@
 }
 
 .card:active {
-    background-color: var(--bg3);
+    background-color: color-mix(in srgb, var(--bg3), transparent);
 }
 
 
@@ -133,6 +137,7 @@
     line-height: 1;
     margin-right: 2px;
     margin-bottom: 0.5rem;
+    color: var(--text-heading);
 
     img {
         height: 2.75rem;
@@ -303,6 +308,7 @@
     padding: 0.5rem;
     border-radius: 0.5rem;
     background-color: color-mix(in srgb, var(--bg1) 75%, transparent);
+    color: var(--text-heading);
 
     .title {
         font-size: 1.5rem;
@@ -367,9 +373,17 @@
 
             height: 2rem;
 
-            background-color: color-mix(in srgb, var(--bg1) 75%, transparent);
+            background-color: color-mix(in srgb, var(--bg1) 50%, transparent);
             padding: 0.25rem;
             border-radius: 0.5rem;
+        }
+
+        .family-nav-item.left {
+            justify-content: flex-start;
+        }
+
+        .family-nav-item.right {
+            justify-content: flex-end;
         }
     }
 

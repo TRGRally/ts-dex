@@ -1,4 +1,4 @@
-enum BaseURL {
+export enum BaseURL {
     PokedexAPI = 'https://pokemon-go-api.github.io/pokemon-go-api/api',
     PokeMiners = 'https://raw.githubusercontent.com/PokeMiners/pogo_assets/master',
     PokeBattler = 'https://fight.pokebattler.com'

@@ -1,6 +1,8 @@
 import { PokemonCard, PokemonMoveset, PokemonShowcase, PokemonStats } from '../elements.js';
 import * as repo from '../util/repository.js';
 import * as sidebar from '../util/sidebar.js';
+import { PAGE_CONTAINER } from '../util/page-elements.js'
+import { BODY } from '../util/page-elements.js';
 
 
 export default function initPokemon(
@@ -18,16 +20,26 @@ export default function initPokemon(
     const pokemon = routeData as unknown as Pokemon;
     console.log(pokemon);
 
-    const background = document.querySelector(".background") as HTMLElement;
-    background.style.backgroundImage = `url('${repo.getTypeBackground(pokemon.type1)}'), url('${repo.getTypeBackground(pokemon.type1)}')`;
-    background.style.backgroundSize = '316px, 100%';
-    background.style.backgroundRepeat = 'no-repeat, repeat';
-
+    BODY.style.backgroundImage = 'unset';
+    BODY.style.backgroundColor = `${repo.typeColors[pokemon.type1]}`;
+    PAGE_CONTAINER.style.backgroundImage = `unset`;
 
     const showcase = document.querySelector(".showcase") as HTMLElement;
-    
     const pokemonShowcase = PokemonShowcase(pokemon);
     showcase.replaceWith(pokemonShowcase);
+
+    let tintedContainers = document.querySelectorAll(".type-tinted") as NodeListOf<HTMLElement>;
+    tintedContainers.forEach((container) => {
+        container.style.backgroundColor = `color-mix( in srgb, var(--bg1) 50%, ${repo.typeColors[pokemon.type1]}`;
+    });
+
+    const background = document.querySelector(".background") as HTMLElement;
+    background.style.backgroundImage = `url('${repo.getTypeBackground(pokemon.type1)}')`;
+    background.style.backgroundSize = '316px';
+    background.style.backgroundRepeat = 'no-repeat';
+
+    
+    
 
 
     const pokemonTitle = document.querySelector(".info > .title") as HTMLElement;

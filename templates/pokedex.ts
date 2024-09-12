@@ -1,6 +1,7 @@
 import { PokemonCard } from '../elements.js';
 import * as repo from '../util/repository.js';
 import * as sidebar from '../util/sidebar.js';
+import { PAGE_CONTAINER, BODY } from '../util/page-elements.js';
 
 
 export default function initPokedex(
@@ -13,6 +14,9 @@ export default function initPokedex(
 ): void {
     console.log("pokedex");
     sidebar.selectPokedex();
+    BODY.style.backgroundImage = `var(--dex-bg-gradient)`;
+    BODY.style.backgroundColor = `var(--dex-bg-top)`;
+
 
     class PokemonLoader {
         private pageNumber: number = 1;

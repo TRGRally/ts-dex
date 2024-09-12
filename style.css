@@ -9,11 +9,16 @@
 
     --text1: #d4d4d4;
     --text2: #d4d4d4aa;
+    --text-heading: #f0f0f0;
 
     --primary: #0089cf;
 
     --success: #52c994;
     --error: #ff8071;
+
+    --dex-bg-top: #d3bcea;
+    --dex-bg-bottom: #8b97ed;
+    --dex-bg-gradient: linear-gradient(180deg, var(--dex-bg-top), var(--dex-bg-bottom));
 
 
     .material-symbols-rounded {
@@ -109,7 +114,7 @@ nav {
     align-items: stretch;
     justify-content: flex-start;
 
-    background-color: var(--bg2);
+    background-color: color-mix(in srgb, var(--bg2), transparent);
 
     padding: 0.75rem;
     gap: 0.25rem;
@@ -131,11 +136,13 @@ nav {
 
         .material-symbols-rounded {
             font-size: 1.25rem;
+            font-variation-settings: 'FILL' 0;
         }
 
         
         &:hover {
-            background-color: var(--bg3);
+            background-color: color-mix(in srgb, var(--bg3), transparent 85%);
+            color: var(--text-heading);
         }
 
         & a {
@@ -146,8 +153,12 @@ nav {
 
 
         &.active {
-            background-color: var(--bg3);
-            font-weight: 600;
+            background-color: color-mix(in srgb, var(--bg3), transparent 60%);
+            color: var(--text-heading);
+
+            .nav-link {
+                font-weight: 500;
+            }
             
             .material-symbols-rounded {
                 font-variation-settings: 'FILL' 1;
@@ -196,6 +207,7 @@ main {
     grid-area: main;
     overflow-y: auto;
     overflow-x: clip;
+    z-index: 0;
 }
 
 #container {
