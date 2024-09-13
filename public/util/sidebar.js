@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.selectPokedex = selectPokedex;
 exports.selectEvents = selectEvents;
 exports.selectTypes = selectTypes;
+exports.selectBattle = selectBattle;
 const navLinkSelector = '.nav-item';
 function selectPokedex() {
     deselectAllNavLinks();
@@ -23,6 +24,13 @@ function selectTypes() {
     const typesNav = document.getElementById('types-nav');
     if (typesNav) {
         typesNav.classList.add('active');
+    }
+}
+function selectBattle() {
+    deselectAllNavLinks();
+    const battleNav = document.getElementById('battle-nav');
+    if (battleNav) {
+        battleNav.classList.add('active');
     }
 }
 function deselectAllNavLinks() {

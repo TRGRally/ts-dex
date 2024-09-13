@@ -24,6 +24,14 @@ export function selectTypes(): void {
     }
 }
 
+export function selectBattle(): void {
+    deselectAllNavLinks();
+    const battleNav = document.getElementById('battle-nav');
+    if (battleNav) {
+        battleNav.classList.add('active');
+    }
+}
+
 function deselectAllNavLinks(): void {
     const navLinks = document.querySelectorAll(navLinkSelector);
     if (navLinks.length > 0) {
@@ -34,3 +42,5 @@ function deselectAllNavLinks(): void {
         console.error("No nav links found with selector:", navLinkSelector);
     }
 }
+
+

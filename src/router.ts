@@ -37,6 +37,13 @@ export const routes = {
             sidebar.selectTypes();
         }
     },
+    "/battle": {
+        template: "/templates/battle.html",
+        script: async () => {
+            console.log("battle");
+            sidebar.selectBattle();
+        }
+    },
     "404": {
         template: "/templates/404.html"
     }
