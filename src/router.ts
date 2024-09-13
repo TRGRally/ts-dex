@@ -30,6 +30,13 @@ export const routes = {
             return pokemon;
         }
     },
+    "/types": {
+        template: "/templates/types.html",
+        script: async () => {
+            console.log("types");
+            sidebar.selectTypes();
+        }
+    },
     "404": {
         template: "/templates/404.html"
     }

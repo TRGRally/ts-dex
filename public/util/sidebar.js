@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.selectPokedex = selectPokedex;
 exports.selectEvents = selectEvents;
+exports.selectTypes = selectTypes;
 const navLinkSelector = '.nav-item';
 function selectPokedex() {
     deselectAllNavLinks();
@@ -15,6 +16,13 @@ function selectEvents() {
     const eventsNav = document.getElementById('events-nav');
     if (eventsNav) {
         eventsNav.classList.add('active');
+    }
+}
+function selectTypes() {
+    deselectAllNavLinks();
+    const typesNav = document.getElementById('types-nav');
+    if (typesNav) {
+        typesNav.classList.add('active');
     }
 }
 function deselectAllNavLinks() {

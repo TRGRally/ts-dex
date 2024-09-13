@@ -16,6 +16,14 @@ export function selectEvents(): void {
     }
 }
 
+export function selectTypes(): void {
+    deselectAllNavLinks();
+    const typesNav = document.getElementById('types-nav');
+    if (typesNav) {
+        typesNav.classList.add('active');
+    }
+}
+
 function deselectAllNavLinks(): void {
     const navLinks = document.querySelectorAll(navLinkSelector);
     if (navLinks.length > 0) {

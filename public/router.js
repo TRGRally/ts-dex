@@ -28,6 +28,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Router = exports.routes = void 0;
 const repo = __importStar(require("./util/repository"));
+const sidebar = __importStar(require("./util/sidebar"));
 const pokedex_1 = __importDefault(require("./templates/pokedex"));
 const pokemon_1 = __importDefault(require("./templates/pokemon"));
 const events_1 = __importDefault(require("./templates/events"));
@@ -53,6 +54,13 @@ exports.routes = {
             const pokemon = repo.getPokemonById(formID.toUpperCase());
             //fetch regional forms if available
             return pokemon;
+        }
+    },
+    "/types": {
+        template: "/templates/types.html",
+        script: async () => {
+            console.log("types");
+            sidebar.selectTypes();
         }
     },
     "404": {
