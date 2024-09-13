@@ -28,15 +28,14 @@ const elements_1 = require("../elements");
 const repo = __importStar(require("../util/repository"));
 const sidebar = __importStar(require("../util/sidebar"));
 const page_elements_1 = require("../util/page-elements");
-const page_elements_2 = require("../util/page-elements");
 function initPokemon(params, routeData) {
     console.log("pokemon");
     console.log("early resolved:", routeData);
     sidebar.selectPokedex();
     const pokemon = routeData;
     console.log(pokemon);
-    page_elements_2.BODY.style.backgroundImage = 'unset';
-    page_elements_2.BODY.style.backgroundColor = `${repo.typeColors[pokemon.type1]}`;
+    page_elements_1.BODY.style.backgroundImage = 'unset';
+    page_elements_1.BODY.style.backgroundColor = `${repo.typeColors[pokemon.type1]}`;
     page_elements_1.PAGE_CONTAINER.style.backgroundImage = `unset`;
     const showcase = document.querySelector(".showcase");
     const pokemonShowcase = (0, elements_1.PokemonShowcase)(pokemon);

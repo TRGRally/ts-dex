@@ -26,11 +26,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PokemonCard = PokemonCard;
 exports.PokemonStats = PokemonStats;
 exports.PokemonEvolutions = PokemonEvolutions;
-exports.PokemonMove = PokemonMove;
+exports.PokemonMoveCard = PokemonMoveCard;
 exports.PokemonMoveset = PokemonMoveset;
 exports.PokemonShowcase = PokemonShowcase;
 exports.RaidCard = RaidCard;
-const pokemon_1 = require("./model/pokemon");
 const repo = __importStar(require("./util/repository"));
 function PokemonCard(pokemon) {
     //
@@ -141,7 +140,7 @@ function PokemonEvolutions(evolutions) {
     });
     return evolutionElement;
 }
-function PokemonMove(move) {
+function PokemonMoveCard(move) {
     const moveElement = document.createElement('div');
     moveElement.attributes['data-id'] = move.id;
     moveElement.classList.add('move');
@@ -175,7 +174,8 @@ function PokemonMoveset(moves) {
     title.textContent = "Moves";
     moveset.appendChild(title);
     moves.forEach((move) => {
-        moveset.appendChild((0, pokemon_1.PokemonMove)(move));
+        const moveElement = PokemonMoveCard(move);
+        moveset.appendChild(moveElement);
     });
     return moveset;
 }

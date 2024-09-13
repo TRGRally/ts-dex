@@ -133,11 +133,13 @@ export function PokemonEvolutions(evolutions: Evolution[]): HTMLElement {
     return evolutionElement;
 }
 
-export function PokemonMove(move: PokemonMove): HTMLElement {
+export function PokemonMoveCard(move: PokemonMove): HTMLElement {
+
     const moveElement = document.createElement('div');
     moveElement.attributes['data-id'] = move.id;
     moveElement.classList.add('move');
     let legacyEffect = "";
+
     if (move.isLegacy) {
         moveElement.classList.add('legacy');
         legacyEffect = `<img class="legacy-effect" src="https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Effects/ring_spike_sharp.png"></img>`;
@@ -166,14 +168,18 @@ export function PokemonMoveset(moves: PokemonMove[]): HTMLElement {
         }
         return 0;
     });
+
     const title = document.createElement('div');
     title.classList.add('title');
     title.textContent = "Moves";
     moveset.appendChild(title);
+
     moves.forEach((move) => {
-        moveset.appendChild(PokemonMove(move));
+        const moveElement = PokemonMoveCard(move);
+        moveset.appendChild(moveElement);
     });
 
+    
     return moveset;
 }
 

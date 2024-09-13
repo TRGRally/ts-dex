@@ -1,8 +1,7 @@
 import { PokemonCard, PokemonMoveset, PokemonShowcase, PokemonStats } from '../elements';
 import * as repo from '../util/repository';
 import * as sidebar from '../util/sidebar';
-import { PAGE_CONTAINER } from '../util/page-elements'
-import { BODY } from '../util/page-elements';
+import { PAGE_CONTAINER, BODY } from '../util/page-elements'
 import { Pokemon } from '../model/pokemon';
 
 
@@ -21,18 +20,22 @@ export default function initPokemon(
     const pokemon = routeData as unknown as Pokemon;
     console.log(pokemon);
 
+
     BODY.style.backgroundImage = 'unset';
     BODY.style.backgroundColor = `${repo.typeColors[pokemon.type1]}`;
     PAGE_CONTAINER.style.backgroundImage = `unset`;
+
 
     const showcase = document.querySelector(".showcase") as HTMLElement;
     const pokemonShowcase = PokemonShowcase(pokemon);
     showcase.replaceWith(pokemonShowcase);
 
+
     let tintedContainers = document.querySelectorAll(".type-tinted") as NodeListOf<HTMLElement>;
     tintedContainers.forEach((container) => {
         container.style.backgroundColor = `color-mix( in srgb, var(--bg1) 50%, ${repo.typeColors[pokemon.type1]}`;
     });
+
 
     const background = document.querySelector(".background") as HTMLElement;
     background.style.backgroundImage = `url('${repo.getTypeBackground(pokemon.type1)}')`;
@@ -46,6 +49,7 @@ export default function initPokemon(
     const dexNr = pokemonTitle.querySelector(".dex-nr") as HTMLElement;
     name.textContent = pokemon.name;
     dexNr.textContent = `#${pokemon.dexNr}`;
+
 
     const formSelector = document.querySelector(".form-selector") as HTMLElement;
     pokemon.regionForms.forEach((form) => {
@@ -79,9 +83,11 @@ export default function initPokemon(
     const moveset = PokemonMoveset(pokemon.quickMoves);
     quickMoves.replaceWith(moveset);
 
+
     const chargedMoves = document.querySelector(".charged-moves") as HTMLElement;
     const chargedMoveset = PokemonMoveset(pokemon.chargedMoves);
     chargedMoves.replaceWith(chargedMoveset);
+
 
     const evolutions = document.querySelector(".evolutions") as HTMLElement;
     pokemon.evolutions.forEach((evolution) => {
@@ -94,9 +100,6 @@ export default function initPokemon(
         `;
         evolutions.appendChild(evolutionCard);
     });
-
-
-
     
     
 }
