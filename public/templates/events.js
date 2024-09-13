@@ -26,9 +26,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = initEvents;
 const elements_1 = require("../elements");
 const sidebar = __importStar(require("../util/sidebar"));
+const page_elements_1 = require("../util/page-elements");
 function initEvents(params, routeData) {
     console.log("events");
     sidebar.selectEvents();
+    page_elements_1.BODY.style.backgroundImage = "unset";
+    page_elements_1.BODY.style.backgroundColor = "var(--bg0)";
     const raidsContainer = document.querySelector(".raids");
     const raids = routeData;
     raids.forEach((raid) => {

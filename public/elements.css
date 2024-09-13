@@ -44,24 +44,6 @@
         /* max-height: calc(100% - 4rem); */
     }
 
-    .type-icons {
-        position: absolute;
-        opacity: 0;
-        top: 0.25rem;
-        left: 0.25rem;
-        width: 100%;
-
-        display: flex;
-        justify-content: flex-start;
-        gap: 0.25rem;
-
-        > * {
-            aspect-ratio: 1;
-            height: 1.25rem;
-        }
-
-    }
-
     .attributes {
         position: absolute;
         top: 0;
@@ -127,6 +109,36 @@
     background-color: color-mix(in srgb, var(--bg3), transparent);
 }
 
+@media (max-width: 579px) {
+    .card {
+        gap: 0;
+        padding: 0.25rem;
+
+        .card-title {
+            font-size: 14px;
+
+            .dexNr {
+                position: absolute;
+                top: 4px;
+                left: 4px;
+            }
+        }
+
+        .attributes {
+
+            .attribute {
+                .text {
+                    font-size: 14px;
+                }
+
+                .material-symbols-rounded {
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+}
+
 
 .logo-landscape {
     display: flex;
@@ -173,7 +185,7 @@
     height: 2.25rem;
     background-color: color-mix( in srgb, var(--bg2), transparent 50%);
 
-    backdrop-filter: blur(8px);
+    backdrop-filter: var(--color-blur);
 
     .icon-container {
         display: flex;
@@ -213,7 +225,7 @@
     background-color: color-mix( in srgb, var(--bg2), transparent 50%);
     cursor: pointer;
 
-    backdrop-filter: blur(8px);
+    backdrop-filter: var(--color-blur);
 
 }
 
@@ -240,7 +252,7 @@
 
     margin-left: auto;
 
-    backdrop-filter: blur(8px);
+    backdrop-filter: var(--color-blur);
 
     .option {
         display: flex;
