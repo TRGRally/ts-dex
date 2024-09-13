@@ -5,9 +5,9 @@
         "module": "NodeNext",
         "sourceMap": true,
         "lib": ["esnext", "DOM", "DOM.Iterable"],
-        "outDir": "docs",
+        "outDir": "public",
         "rootDir": "src"
     },
     "include": ["src/**/*"],
-    "exclude": ["node_modules", "docs"]
+    "exclude": ["node_modules", "public"]
 }
