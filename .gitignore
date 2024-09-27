@@ -3,3 +3,5 @@ node_modules/
 dist/
 .idea/
 pogo_assets/
+.DS_store
+**/.DS_store
