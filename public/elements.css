@@ -152,9 +152,10 @@
     color: var(--text-heading);
 
     img {
-        height: 2.75rem;
+        height: 2.5rem;
         aspect-ratio: 1;
         margin-right: 0.5rem;
+        filter: brightness(1.25);
     }
 
     .logo-text {

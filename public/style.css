@@ -102,6 +102,7 @@ a {
 a.link {
     color: var(--primary);
     text-decoration: none;
+    filter: brightness(1.25);
 
     &:hover {
         text-decoration: underline;
