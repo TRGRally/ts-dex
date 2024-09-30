@@ -22,7 +22,7 @@ export default function initPokemon(
 
 
     BODY.style.backgroundImage = 'unset';
-    BODY.style.backgroundColor = `${repo.typeColors[pokemon.type1]}`;
+    BODY.style.backgroundColor = `${repo.typeBackgroundColors[pokemon.type1]}`;
     PAGE_CONTAINER.style.backgroundImage = `unset`;
 
 
@@ -33,7 +33,7 @@ export default function initPokemon(
 
     let tintedContainers = document.querySelectorAll(".type-tinted") as NodeListOf<HTMLElement>;
     tintedContainers.forEach((container) => {
-        container.style.backgroundColor = `color-mix( in srgb, var(--bg1) 50%, ${repo.typeColors[pokemon.type1]}`;
+        container.style.backgroundColor = `color-mix( in srgb, var(--bg1) 50%, ${repo.typeBackgroundColors[pokemon.type1]}`;
     });
 
 

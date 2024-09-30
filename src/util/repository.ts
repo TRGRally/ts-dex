@@ -737,6 +737,27 @@ export const typeColors = {
     POKEMON_TYPE_WATER: "#539DDF"
 }
 
+export const typeBackgroundColors = {
+    POKEMON_TYPE_BUG: "#bfab00",
+    POKEMON_TYPE_DARK: "#000c2d",
+    POKEMON_TYPE_DRAGON: "#336b38",
+    POKEMON_TYPE_ELECTRIC: "#003966",
+    POKEMON_TYPE_FIRE: "#64273d",
+    POKEMON_TYPE_FAIRY: "#956ae8",
+    POKEMON_TYPE_FIGHTING: "#877150",
+    POKEMON_TYPE_FLYING: "#5da0f0",
+    POKEMON_TYPE_GHOST: "##003d66",
+    POKEMON_TYPE_GRASS: "#a3d043",
+    POKEMON_TYPE_GROUND: "#c2996a",
+    POKEMON_TYPE_ICE: "#3c6c8a",
+    POKEMON_TYPE_NORMAL: "#d6c290",
+    POKEMON_TYPE_POISON: "#1c0c59",
+    POKEMON_TYPE_PSYCHIC: "#3829d7",
+    POKEMON_TYPE_ROCK: "#747e90",
+    POKEMON_TYPE_STEEL: "#172937",
+    POKEMON_TYPE_WATER: "#0087a5"
+}
+
 export function getTypeBackground(type: string): string {
     if (type.includes('_')) {
         type = type.split('_')[2];
