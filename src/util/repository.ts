@@ -342,7 +342,17 @@ export async function getRaids(): Promise<Raid[]> {
     }));
 
     const raids = raidsJson.map((raidJson) => {
-        const pokemon = raidPokemon.find((pokemon) => pokemon.formId === raidJson.pokemon);
+        // the potentialPokemon may have a different format for formId, or not exist. so we have this madness.
+        const pokemon = raidPokemon.find((potentialPokemon) => 
+            potentialPokemon?.formId === raidJson.pokemon || 
+            potentialPokemon?.formId + "_FORM" === raidJson.pokemon ||
+            potentialPokemon?.formId === raidJson.pokemon + "_FORM" ||
+            potentialPokemon?.formId === raidJson.pokemon.replace("_FORM", "") ||
+            potentialPokemon?.formId.replace("_FORM", "") === raidJson.pokemon
+        ) ?? null;
+
+        console.log(pokemon);
+
         if (!pokemon) {
             console.warn(`Pokemon with formId ${raidJson.pokemon} not found in raidPokemon array.`);
             return null;
