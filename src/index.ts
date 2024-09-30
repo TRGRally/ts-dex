@@ -38,6 +38,44 @@ async function main() {
     });
 
     const cientRouter = new router.Router(router.routes);
+
+    //image preloading
+    const imagePaths = [
+        repo.getTypeBackground("Normal"),
+        repo.getTypeBackground("Fire"),
+        repo.getTypeBackground("Water"),
+        repo.getTypeBackground("Electric"),
+        repo.getTypeBackground("Grass"),
+        repo.getTypeBackground("Ice"),
+        repo.getTypeBackground("Fighting"),
+        repo.getTypeBackground("Poison"),
+        repo.getTypeBackground("Ground"),
+        repo.getTypeBackground("Flying"),
+        repo.getTypeBackground("Psychic"),
+        repo.getTypeBackground("Bug"),
+        repo.getTypeBackground("Rock"),
+        repo.getTypeBackground("Ghost"),
+        repo.getTypeBackground("Dragon"),
+        repo.getTypeBackground("Dark"),
+        repo.getTypeBackground("Steel"),
+        repo.getTypeBackground("Fairy"),
+    ];
+    
+    const preloadDiv = document.createElement('div');
+    preloadDiv.style.position = 'absolute';
+    preloadDiv.style.width = '0';
+    preloadDiv.style.height = '0';
+    preloadDiv.style.overflow = 'hidden';
+    
+    imagePaths.forEach((path) => {
+        const imgDiv = document.createElement('div');
+        imgDiv.style.backgroundImage = `url(${path})`;
+        imgDiv.style.width = '0';
+        imgDiv.style.height = '0';
+        preloadDiv.appendChild(imgDiv);
+    });
+    
+    document.body.appendChild(preloadDiv);
     
 }
 
