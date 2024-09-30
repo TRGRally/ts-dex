@@ -33,7 +33,8 @@ export default function initPokemon(
 
     let tintedContainers = document.querySelectorAll(".type-tinted") as NodeListOf<HTMLElement>;
     tintedContainers.forEach((container) => {
-        container.style.backgroundColor = `color-mix( in srgb, var(--bg1) 50%, ${repo.typeBackgroundColors[pokemon.type1]}`;
+        //container.style.backgroundColor = `color-mix( in srgb, var(--bg1) 50%, ${repo.typeBackgroundColors[pokemon.type1]}`;
+        container.style.backdropFilter = 'var(--color-blur)';   
     });
 
 

@@ -200,7 +200,7 @@ export function PokemonShowcase(pokemon: Pokemon): HTMLElement {
 
     const types = document.createElement('div');
     types.classList.add('types');
-    types.classList.add('type-tinted');
+    //types.classList.add('type-tinted');
     types.innerHTML = `
         <img class="type" src="${repo.getTypeIcon(pokemon.type1)}" />
         ${pokemon.type2 ? `<img class="type" src="${repo.getTypeIcon(pokemon.type2)}" />` : ""}
