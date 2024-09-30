@@ -116,6 +116,10 @@ export default function initPokedex(
     
                 //save pos
                 const lastElement = scrollable.querySelector('.card:last-child') as HTMLElement;
+                
+                //if null last element, don't bother
+                if (!lastElement) return;
+                
                 const lastElementOffset = lastElement.offsetTop;
                 const previousScrollTop = scrollable.scrollTop;
     
