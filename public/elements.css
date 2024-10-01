@@ -215,6 +215,33 @@
     }
 }
 
+@media (max-width: 579px) {
+    .search-bar {
+        padding-left: 0.25rem;
+        border-radius: 2rem;
+        min-width: 0;
+        .material-symbols-rounded {
+            font-size: 1.4rem;
+        }
+
+        width: auto;
+
+        & input {
+            width: auto;
+            min-width: 0;
+        }
+    }
+
+    .sort-icon {
+        border-radius: 4rem !important;
+    }
+
+    #search-sort-by {
+        margin-left: auto;
+    }
+    
+}
+
 .sort-icon {
     /* border: solid 2px color-mix( in srgb, var(--bg3), transparent 90%); */
     aspect-ratio: 1;
@@ -290,6 +317,13 @@
 .dex-selector.active {
     color: var(--primary);
     border-color: var(--primary);
+}
+
+@media (max-width: 579px) {
+    .dex-selector {
+        margin-left: 0;
+        border-radius: 4rem;
+    }
 }
 
 
