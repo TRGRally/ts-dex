@@ -36,6 +36,10 @@
 
 }
 
+html {
+    -webkit-tap-highlight-color: transparent;
+}
+
 /* scrollbar customisation */
 *::-webkit-scrollbar {
     width: 8px;
