@@ -492,11 +492,9 @@
     bottom: -24px;
     z-index: 1;
 
-    .type {
+    .icon {
         aspect-ratio: 1;
         height: 2rem;
-        box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.15);
-        border-radius: 50%;
     }
 }
 

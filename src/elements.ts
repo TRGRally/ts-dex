@@ -133,7 +133,7 @@ export function PokemonEvolutions(evolutions: Evolution[]): HTMLElement {
 }
 
 export function PokemonMoveCard(move: PokemonMove): HTMLElement {
-
+    const typeName = repo.getNormalizedTypeName(move.type);
     const moveElement = document.createElement('div');
     moveElement.attributes['data-id'] = move.id;
     moveElement.classList.add('move');
@@ -145,7 +145,7 @@ export function PokemonMoveCard(move: PokemonMove): HTMLElement {
     }
 
     moveElement.innerHTML = `
-        <div class="move-type"><img src="${repo.getTypeIcon(move.type)}" /></div>
+        <div class="move-type icon ${typeName}"><img src="${repo.getTypeIconURL(move.type)}" /></div>
         <div class="move-name">${move.name}</div>
         ${legacyEffect}
     `;
@@ -201,10 +201,11 @@ export function PokemonShowcase(pokemon: Pokemon): HTMLElement {
     const types = document.createElement('div');
     types.classList.add('types');
     //types.classList.add('type-tinted');
-    types.innerHTML = `
-        <img class="type" src="${repo.getTypeIcon(pokemon.type1)}" />
-        ${pokemon.type2 ? `<img class="type" src="${repo.getTypeIcon(pokemon.type2)}" />` : ""}
-    `;
+
+    types.appendChild(repo.getTypeIcon(pokemon.type1));
+    if (pokemon.type2) {
+        types.appendChild(repo.getTypeIcon(pokemon.type2));
+    }
 
 
     showcase.innerHTML = `

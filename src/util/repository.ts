@@ -51,13 +51,28 @@ export async function getJson(apiUrl: string, baseUrl: BaseURL = BaseURL.Pokedex
     }
 }
 
-export function getTypeIcon(type: string): string {
-
-    if (!type.includes('_')) {
-        type = `POKEMON_TYPE_${type.toUpperCase()}`;
+export function getNormalizedTypeName(type: string): string {
+    if (type.includes('POKEMON_TYPE_')) {
+        type = type.replace('POKEMON_TYPE_', '');
     }
+    type = type.toLowerCase();
+    return type;
+}
 
-    return `${BaseURL.PokeMiners}/Images/Types/${type}.png`;
+export function getTypeIconURL(type: string): string {
+    return `/assets/type-icons/${getNormalizedTypeName(type)}.svg`;
+}
+
+export function getTypeIcon(type: string): HTMLElement {
+    const icon = document.createElement('div');
+    const typeName = getNormalizedTypeName(type);
+    const glyph = document.createElement('img');
+    glyph.src = getTypeIconURL(type);
+    glyph.alt = typeName;
+    icon.classList.add('icon');
+    icon.classList.add(typeName);
+    icon.appendChild(glyph);
+    return icon;
 }
 
 export function getWeatherIcon(assetName: string): string {
@@ -100,7 +115,7 @@ function getTypesArray(typesJsonArray: TypeJson[]): PokemonType[] {
         function convertTypeJsonToType(typeJson: TypeJson): PokemonType {
             const type = typeJson.type;
             const name = typeJson.names.English;
-            const imageUrl = getTypeIcon(type);
+            const imageUrl = getTypeIconURL(type);
             const doubleDamageFrom = typeJson.doubleDamageFrom;
             const halfDamageFrom = typeJson.halfDamageFrom;
             const noDamageFrom = typeJson.noDamageFrom;
