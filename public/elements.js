@@ -140,6 +140,7 @@ function PokemonEvolutions(evolutions) {
     return evolutionElement;
 }
 function PokemonMoveCard(move) {
+    const typeName = repo.getNormalizedTypeName(move.type);
     const moveElement = document.createElement('div');
     moveElement.attributes['data-id'] = move.id;
     moveElement.classList.add('move');
@@ -149,7 +150,7 @@ function PokemonMoveCard(move) {
         legacyEffect = `<img class="legacy-effect" src="https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Effects/ring_spike_sharp.png"></img>`;
     }
     moveElement.innerHTML = `
-        <div class="move-type"><img src="${repo.getTypeIcon(move.type)}" /></div>
+        <div class="move-type icon ${typeName}"><img src="${repo.getTypeIconURL(move.type)}" /></div>
         <div class="move-name">${move.name}</div>
         ${legacyEffect}
     `;
@@ -194,11 +195,11 @@ function PokemonShowcase(pokemon) {
     `;
     const types = document.createElement('div');
     types.classList.add('types');
-    types.classList.add('type-tinted');
-    types.innerHTML = `
-        <img class="type" src="${repo.getTypeIcon(pokemon.type1)}" />
-        ${pokemon.type2 ? `<img class="type" src="${repo.getTypeIcon(pokemon.type2)}" />` : ""}
-    `;
+    //types.classList.add('type-tinted');
+    types.appendChild(repo.getTypeIcon(pokemon.type1));
+    if (pokemon.type2) {
+        types.appendChild(repo.getTypeIcon(pokemon.type2));
+    }
     showcase.innerHTML = `
         ${family}
         <img class="pokemon-image" draggable="false" src="${pokemon.imageUrl || "/assets/unknown.png"}" />

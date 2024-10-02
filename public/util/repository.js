@@ -1,7 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.typeColors = exports.Region = exports.BaseURL = void 0;
+exports.typeBackgroundColors = exports.typeColors = exports.Region = exports.BaseURL = void 0;
 exports.getJson = getJson;
+exports.getNormalizedTypeName = getNormalizedTypeName;
+exports.getTypeIconURL = getTypeIconURL;
 exports.getTypeIcon = getTypeIcon;
 exports.getWeatherIcon = getWeatherIcon;
 exports.getRaids = getRaids;
@@ -59,11 +61,26 @@ async function getJson(apiUrl, baseUrl = BaseURL.PokedexAPI) {
         throw error;
     }
 }
-function getTypeIcon(type) {
-    if (!type.includes('_')) {
-        type = `POKEMON_TYPE_${type.toUpperCase()}`;
+function getNormalizedTypeName(type) {
+    if (type.includes('POKEMON_TYPE_')) {
+        type = type.replace('POKEMON_TYPE_', '');
     }
-    return `${BaseURL.PokeMiners}/Images/Types/${type}.png`;
+    type = type.toLowerCase();
+    return type;
+}
+function getTypeIconURL(type) {
+    return `/assets/type-icons/${getNormalizedTypeName(type)}.svg`;
+}
+function getTypeIcon(type) {
+    const icon = document.createElement('div');
+    const typeName = getNormalizedTypeName(type);
+    const glyph = document.createElement('img');
+    glyph.src = getTypeIconURL(type);
+    glyph.alt = typeName;
+    icon.classList.add('icon');
+    icon.classList.add(typeName);
+    icon.appendChild(glyph);
+    return icon;
 }
 function getWeatherIcon(assetName) {
     return `${BaseURL.PokeMiners}/Images/Weather/${assetName}.png`;
@@ -95,7 +112,7 @@ function getTypesArray(typesJsonArray) {
     function convertTypeJsonToType(typeJson) {
         const type = typeJson.type;
         const name = typeJson.names.English;
-        const imageUrl = getTypeIcon(type);
+        const imageUrl = getTypeIconURL(type);
         const doubleDamageFrom = typeJson.doubleDamageFrom;
         const halfDamageFrom = typeJson.halfDamageFrom;
         const noDamageFrom = typeJson.noDamageFrom;
@@ -302,7 +319,13 @@ async function getRaids() {
         return getPokemonById(formId);
     }));
     const raids = raidsJson.map((raidJson) => {
-        const pokemon = raidPokemon.find((pokemon) => pokemon.formId === raidJson.pokemon);
+        // the potentialPokemon may have a different format for formId, or not exist. so we have this madness.
+        const pokemon = raidPokemon.find((potentialPokemon) => potentialPokemon?.formId === raidJson.pokemon ||
+            potentialPokemon?.formId + "_FORM" === raidJson.pokemon ||
+            potentialPokemon?.formId === raidJson.pokemon + "_FORM" ||
+            potentialPokemon?.formId === raidJson.pokemon.replace("_FORM", "") ||
+            potentialPokemon?.formId.replace("_FORM", "") === raidJson.pokemon) ?? null;
+        console.log(pokemon);
         if (!pokemon) {
             console.warn(`Pokemon with formId ${raidJson.pokemon} not found in raidPokemon array.`);
             return null;
@@ -615,6 +638,26 @@ exports.typeColors = {
     POKEMON_TYPE_ROCK: "#C9BB8A",
     POKEMON_TYPE_STEEL: "#5695A3",
     POKEMON_TYPE_WATER: "#539DDF"
+};
+exports.typeBackgroundColors = {
+    POKEMON_TYPE_BUG: "#bfab00",
+    POKEMON_TYPE_DARK: "#000c2d",
+    POKEMON_TYPE_DRAGON: "#336b38",
+    POKEMON_TYPE_ELECTRIC: "#003966",
+    POKEMON_TYPE_FIRE: "#64273d",
+    POKEMON_TYPE_FAIRY: "#956ae8",
+    POKEMON_TYPE_FIGHTING: "#877150",
+    POKEMON_TYPE_FLYING: "#5da0f0",
+    POKEMON_TYPE_GHOST: "##003d66",
+    POKEMON_TYPE_GRASS: "#a3d043",
+    POKEMON_TYPE_GROUND: "#c2996a",
+    POKEMON_TYPE_ICE: "#3c6c8a",
+    POKEMON_TYPE_NORMAL: "#d6c290",
+    POKEMON_TYPE_POISON: "#1c0c59",
+    POKEMON_TYPE_PSYCHIC: "#3829d7",
+    POKEMON_TYPE_ROCK: "#747e90",
+    POKEMON_TYPE_STEEL: "#172937",
+    POKEMON_TYPE_WATER: "#0087a5"
 };
 function getTypeBackground(type) {
     if (type.includes('_')) {

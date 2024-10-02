@@ -35,14 +35,15 @@ function initPokemon(params, routeData) {
     const pokemon = routeData;
     console.log(pokemon);
     page_elements_1.BODY.style.backgroundImage = 'unset';
-    page_elements_1.BODY.style.backgroundColor = `${repo.typeColors[pokemon.type1]}`;
+    page_elements_1.BODY.style.backgroundColor = `${repo.typeBackgroundColors[pokemon.type1]}`;
     page_elements_1.PAGE_CONTAINER.style.backgroundImage = `unset`;
     const showcase = document.querySelector(".showcase");
     const pokemonShowcase = (0, elements_1.PokemonShowcase)(pokemon);
     showcase.replaceWith(pokemonShowcase);
     let tintedContainers = document.querySelectorAll(".type-tinted");
     tintedContainers.forEach((container) => {
-        container.style.backgroundColor = `color-mix( in srgb, var(--bg1) 50%, ${repo.typeColors[pokemon.type1]}`;
+        //container.style.backgroundColor = `color-mix( in srgb, var(--bg1) 50%, ${repo.typeBackgroundColors[pokemon.type1]}`;
+        container.style.backdropFilter = 'var(--color-blur)';
     });
     const background = document.querySelector(".background");
     background.style.backgroundImage = `url('${repo.getTypeBackground(pokemon.type1)}')`;
