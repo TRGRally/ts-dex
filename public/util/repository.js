@@ -86,7 +86,7 @@ function getWeatherIcon(assetName) {
     return `${BaseURL.PokeMiners}/Images/Weather/${assetName}.png`;
 }
 async function fetchCurrentRaidsJson() {
-    const data = await getJson("/raids", BaseURL.PokeBattler);
+    const data = await getJson("raids", BaseURL.PokeBattler);
     console.log('raids:', data.breakingNews);
     return data.breakingNews;
 }

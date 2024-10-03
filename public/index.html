@@ -65,6 +65,27 @@
     <link rel="stylesheet" href="/elements.css">
 
     <script type="module" src="/bundle.js"></script>
+<!-- inline style to stop loading pop-in -->
+    <style>
+        #db-loading {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            opacity: 0.75;
+            gap: 2rem;
+            font-size: 1.5rem;
+            margin-top: 30vh;
+            max-width: 90%;
+            margin-inline: auto;
+            text-wrap: balance;
+            text-align: center;
+
+            .material-symbols-rounded {
+                font-size: 3rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <nav>
@@ -106,6 +127,15 @@
     </nav>
 
     <main>
+
+        <div id="db-loading">
+            <span class="material-symbols-rounded">
+                query_stats
+            </span>
+           <div class="loading-text">
+                Fetching the newest data ;)
+           </div>
+        </div>
         
     </main>
     

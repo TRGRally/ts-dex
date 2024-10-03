@@ -80,7 +80,7 @@ export function getWeatherIcon(assetName: string): string {
 }
 
 async function fetchCurrentRaidsJson(): Promise<BreakingNewsJson[]> {
-    const data = await getJson("/raids", BaseURL.PokeBattler);
+    const data = await getJson("raids", BaseURL.PokeBattler);
     console.log('raids:', data.breakingNews);
     return data.breakingNews;
 }

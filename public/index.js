@@ -26,15 +26,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const repo = __importStar(require("./util/repository"));
 const router = __importStar(require("./router"));
 async function main() {
+    const loading = document.getElementById('db-loading');
     //await repo.initDB();
     let dbEmpty = await repo.isDBEmpty();
     console.log("empty", dbEmpty);
     console.log("stale", repo.isDBStale());
     if (dbEmpty || repo.isDBStale()) {
         console.warn("DB is empty or stale, refreshing...");
+        if (loading) {
+            loading.style.display = 'flex';
+        }
         await repo.initDB();
         console.log("DB refreshed");
-        window.location.reload();
+        //lol
+        // setTimeout(() => {
+        //     window.location.reload();
+        // }, 1000);
     }
     else {
         repo.getAllPokemon(1, 1400).then((pokemon) => {
