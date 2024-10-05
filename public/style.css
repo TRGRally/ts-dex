@@ -85,11 +85,13 @@ html {
     }
 }
 
+/*noinspection CssInvalidPseudoSelector*/
 ::view-transition-old(root) {
     animation: 90ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
         300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
 }
 
+/*noinspection CssInvalidPseudoSelector*/
 ::view-transition-new(root) {
     animation: 210ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
         300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
@@ -232,7 +234,7 @@ body {
     width: 100vw;
     margin: 0;
 
-    font-family: var(--font-family);
+    font-family: var(--font-family), system-ui;
 
     background-color: var(--bg0);
     color: var(--text1);
@@ -382,6 +384,7 @@ main {
     grid-auto-rows: 180px;
     justify-content: center;
     gap: 0.75rem;
+    padding-bottom: 0.75rem;
 }
 
 header {
@@ -431,7 +434,7 @@ header {
         padding-block-end: 6rem;
     }
 
-    /* this is bad for accessibility but its overlfowing the viewport?? */
+    /* this is bad for accessibility but its overflowing the viewport?? */
     *::-webkit-scrollbar {
         width: 0;
     }

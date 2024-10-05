@@ -58,16 +58,18 @@ export type Route = {
 
 export class Router {
     private routes: { [key: string]: Route };
+    private templates: { [key: string]: string };
     private params: { [key: string]: string };
     private routeData: any;
-    private templates: { [key: string]: string };
 
     constructor(routes: { [key: string]: Route }) {
         this.routes = routes;
         this.params = {};
         this.routeData = {};
         this.templates = {};
-        this.init();
+        this.init().then(r => {
+            //might need to do something here idk
+        });
     }
 
     private async init(): Promise<void> {
@@ -76,6 +78,7 @@ export class Router {
         await this.preloadTemplates();
         await this.handleLocation();
         console.log("[Router] Init");
+        return;
     }
 
     private async preloadTemplates(): Promise<void> {
@@ -83,8 +86,7 @@ export class Router {
         const uniqueTemplatePaths = Array.from(new Set(templatePaths));
 
         await Promise.all(uniqueTemplatePaths.map(async (path) => {
-            const html = await fetch(path).then((data) => data.text());
-            this.templates[path] = html;
+            this.templates[path] = await fetch(path).then((data) => data.text());
         }));
     }
 
@@ -138,7 +140,7 @@ export class Router {
             }
         }
 
-        //pregressive view transition
+        //progressive view transition
         if (document.startViewTransition) {
             document.startViewTransition(async () => {
                 await this.loadContent(route);
@@ -194,7 +196,9 @@ export class Router {
             event.preventDefault();
             const path = target.getAttribute('href');
             if (path) {
-                this.navigateTo(path);
+                this.navigateTo(path).then(r => {
+                    //might need to do something here idk
+                });
             }
         }
     }

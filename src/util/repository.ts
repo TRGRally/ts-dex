@@ -397,7 +397,7 @@ export async function initDB(): Promise<void> {
     const typesData = await fetchTypeJson();
     const allTypesData = getTypesArray(typesData);
 
-    //temporary costume exclusion while i work out how theyll be handled
+    //temporary costume exclusion while i work out how they'll be handled
     const costumeFormIds = ['PIKACHU_DOCTOR', 'PIKACHU_FLYING_01', 'PIKACHU_FLYING_02', 'PIKACHU_TSHIRT_01', 'PIKACHU_TSHIRT_02', 'PIKACHU_FLYING_03', 'PIKACHU_FLYING_04', 'PIKACHU_FLYING_5TH_ANNIV', 'PIKACHU_FLYING_OKINAWA', 'PIKACHU_GOFEST_2024_MTIARA', 'PIKACHU_GOFEST_2024_STIARA', 'PIKACHU_GOTOUR_2024_A', 'PIKACHU_GOTOUR_2024_A_02', 'PIKACHU_GOTOUR_2024_B', 'PIKACHU_GOTOUR_2024_B_02', 'PIKACHU_HORIZONS', 'PIKACHU_JEJU', 'PIKACHU_KARIYUSHI', 'PIKACHU_POP_STAR', 'PIKACHU_ROCK_STAR', 'PIKACHU_SUMMER_2023_A', 'PIKACHU_SUMMER_2023_B', 'PIKACHU_SUMMER_2023_C', 'PIKACHU_SUMMER_2023_D', 'PIKACHU_SUMMER_2023_E', 'PIKACHU_TSHIRT_03', 'EEVEE_GOFEST_2024_MTIARA', 'EEVEE_GOFEST_2024_STIARA', 'ESPEON_GOFEST_2024_SSCARF', 'UMBREON_GOFEST_2024_MSCARF'];
 
     const pokemonData = await fetchPokemonJson(); 
