@@ -147,10 +147,10 @@ function PokemonMoveCard(move) {
     let legacyEffect = "";
     if (move.isLegacy) {
         moveElement.classList.add('legacy');
-        legacyEffect = `<img class="legacy-effect" src="https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Effects/ring_spike_sharp.png"></img>`;
+        legacyEffect = `<img class="legacy-effect" src="https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Effects/ring_spike_sharp.png" alt="legacy move">`;
     }
     moveElement.innerHTML = `
-        <div class="move-type icon ${typeName}"><img src="${repo.getTypeIconURL(move.type)}" /></div>
+        <div class="move-type icon ${typeName}"><img src="${repo.getTypeIconURL(move.type)}"  alt=${typeName}/></div>
         <div class="move-name">${move.name}</div>
         ${legacyEffect}
     `;
@@ -202,17 +202,18 @@ function PokemonShowcase(pokemon) {
     }
     showcase.innerHTML = `
         ${family}
-        <img class="pokemon-image" draggable="false" src="${pokemon.imageUrl || "/assets/unknown.png"}" />
-        ${pokemon.megaEvolutions.length > 0 ? `<img class="mega-icon" draggable="false" src="${repo.getMegaIconSmall()}" />` : ''}
+        <img class="pokemon-image" draggable="false" src="${pokemon.imageUrl || "/assets/unknown.png"}" alt="no pokemon image found"/>
+        ${pokemon.megaEvolutions.length > 0 ? `<img class="mega-icon" draggable="false" src="${repo.getMegaIconSmall()}"  alt="mega"/>` : ''}
     `;
     showcase.appendChild(types);
+    ``;
     return showcase;
 }
 function RaidCard(raid) {
     const raidCard = document.createElement('a');
     raidCard.classList.add('card');
     raidCard.innerHTML = `
-        <img draggable="false" src="${raid.pokemon.imageUrl || "/assets/unknown.png"}" />
+        <img draggable="false" src="${raid.pokemon.imageUrl || "/assets/unknown.png"}"  alt="pokemon image"/>
         <div class="card-title"><span>${raid.pokemon.name}</span></div>
     `;
     raidCard.setAttribute('href', `/raids/${raid.pokemon.formId.toLowerCase()}`);

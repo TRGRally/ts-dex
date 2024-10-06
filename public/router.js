@@ -76,15 +76,17 @@ exports.routes = {
 };
 class Router {
     routes;
+    templates;
     params;
     routeData;
-    templates;
     constructor(routes) {
         this.routes = routes;
         this.params = {};
         this.routeData = {};
         this.templates = {};
-        this.init();
+        this.init().then(r => {
+            //might need to do something here idk
+        });
     }
     async init() {
         window.addEventListener('popstate', () => this.handleLocation());
@@ -92,13 +94,13 @@ class Router {
         await this.preloadTemplates();
         await this.handleLocation();
         console.log("[Router] Init");
+        return;
     }
     async preloadTemplates() {
         const templatePaths = Object.values(this.routes).map(route => route.template);
         const uniqueTemplatePaths = Array.from(new Set(templatePaths));
         await Promise.all(uniqueTemplatePaths.map(async (path) => {
-            const html = await fetch(path).then((data) => data.text());
-            this.templates[path] = html;
+            this.templates[path] = await fetch(path).then((data) => data.text());
         }));
     }
     addRoute(path, config) {
@@ -144,7 +146,7 @@ class Router {
                 return;
             }
         }
-        //pregressive view transition
+        //progressive view transition
         if (document.startViewTransition) {
             document.startViewTransition(async () => {
                 await this.loadContent(route);
@@ -192,7 +194,9 @@ class Router {
             event.preventDefault();
             const path = target.getAttribute('href');
             if (path) {
-                this.navigateTo(path);
+                this.navigateTo(path).then(r => {
+                    //might need to do something here idk
+                });
             }
         }
     }

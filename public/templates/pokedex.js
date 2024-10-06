@@ -43,6 +43,7 @@ function initPokedex(params, routeData) {
         dexSearchInput;
         bottomReached = false;
         totalPokemonCount = 0;
+        gridDimensions;
         constructor(containerId, spacerId, mainSelector, searchInputId) {
             this.container = document.getElementById(containerId);
             this.spacer = document.getElementById(spacerId);
@@ -54,6 +55,7 @@ function initPokedex(params, routeData) {
         //dependency injection? more like dependency rejection
         async init() {
             this.totalPokemonCount = await repo.getTotalPokemonCount();
+            this.gridDimensions = this.calculateGridHeight();
             await this.loadPage();
             this.setupEventListeners();
         }
@@ -77,22 +79,68 @@ function initPokedex(params, routeData) {
             });
             this.adjustSpacer();
         }
-        //for discord style "filling the space in" lazy loading
-        adjustSpacer() {
-            const containerBottom = this.container.getBoundingClientRect().bottom;
-            const viewportHeight = window.innerHeight;
-            const remainingHeight = viewportHeight - containerBottom;
-            if (remainingHeight > 0) {
-                this.spacer.style.height = Math.max(remainingHeight, 0) + 'px';
+        calculateGridHeight() {
+            const computedStyle = getComputedStyle(this.container);
+            const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+            const columnWidthMatch = computedStyle.getPropertyValue('grid-template-columns').match(/(\d+)px/);
+            const columnWidth = columnWidthMatch ? parseFloat(columnWidthMatch[1]) : 0;
+            const rowHeightMatch = computedStyle.getPropertyValue('grid-auto-rows').match(/(\d+)px/);
+            const rowHeight = rowHeightMatch ? parseFloat(rowHeightMatch[1]) : 0;
+            //grid gap
+            const gapValue = computedStyle.getPropertyValue('gap') || computedStyle.getPropertyValue('grid-gap') || '0px';
+            let gapInPixels;
+            if (gapValue.includes('rem')) {
+                gapInPixels = parseFloat(gapValue) * rootFontSize;
             }
             else {
-                this.spacer.style.height = '0px';
+                gapInPixels = parseFloat(gapValue);
             }
+            gapInPixels = isNaN(gapInPixels) ? 0 : gapInPixels;
+            //bottom padding
+            const paddingBottomValue = computedStyle.getPropertyValue('padding-bottom') || '0px';
+            let paddingBottomInPixels;
+            if (paddingBottomValue.includes('rem')) {
+                paddingBottomInPixels = parseFloat(paddingBottomValue) * rootFontSize;
+            }
+            else {
+                paddingBottomInPixels = parseFloat(paddingBottomValue);
+            }
+            paddingBottomInPixels = isNaN(paddingBottomInPixels) ? 0 : paddingBottomInPixels;
+            const containerWidth = this.container.clientWidth;
+            const numColumns = Math.floor((containerWidth + gapInPixels) / (columnWidth + gapInPixels)) || 1;
+            const adjustedNumColumns = numColumns > 0 ? numColumns : 1;
+            const numRows = Math.ceil(this.totalPokemonCount / adjustedNumColumns);
+            // Calculate the total height
+            const totalHeight = numRows * rowHeight + (numRows - 1) * gapInPixels + paddingBottomInPixels;
+            console.warn("totalHeight", totalHeight);
+            console.warn("numColumns", numColumns);
+            console.warn("numRows", numRows);
+            return {
+                columns: adjustedNumColumns,
+                rows: numRows,
+                totalHeight: totalHeight
+            };
+        }
+        //for discord style "filling the space in" lazy loading
+        adjustSpacer() {
+            const totalHeight = this.gridDimensions.totalHeight;
+            const lastCard = this.container.querySelector('.card:last-child');
+            const lastCardRect = lastCard.getBoundingClientRect();
+            //get this in terms of its position in the container
+            const lastCardBottom = lastCardRect.bottom - this.container.getBoundingClientRect().top;
+            const spacerHeight = totalHeight - lastCardBottom;
+            console.warn("spacerHeight", spacerHeight);
+            console.warn(this.bottomReached);
+            this.spacer.style.height = spacerHeight + 'px';
         }
         //javascript nonsense
         setupEventListeners() {
             this.dexSearchInput.addEventListener("input", this.onSearchInput.bind(this));
             this.main.addEventListener("scroll", this.onScroll.bind(this));
+            window.addEventListener("resize", () => {
+                this.gridDimensions = this.calculateGridHeight();
+                this.adjustSpacer();
+            });
         }
         async onSearchInput() {
             this.isSearched = this.dexSearchInput.value.length > 0;
@@ -102,9 +150,11 @@ function initPokedex(params, routeData) {
         async onScroll() {
             if (this.bottomReached)
                 return;
-            const threshold = 400;
+            const threshold = window.innerHeight * 2;
             const scrollable = this.main;
-            if (Math.abs(scrollable.scrollHeight - scrollable.scrollTop - scrollable.clientHeight) <= threshold) {
+            const spacer = this.spacer;
+            const spacerTop = spacer.getBoundingClientRect().top;
+            if (spacerTop < threshold) {
                 //checks first before trying to load more
                 const maxPageNumber = Math.ceil(this.totalPokemonCount / this.pageSize);
                 if (this.pageNumber >= maxPageNumber) {
@@ -118,12 +168,12 @@ function initPokedex(params, routeData) {
                 //if null last element, don't bother
                 if (!lastElement)
                     return;
-                const lastElementOffset = lastElement.offsetTop;
-                const previousScrollTop = scrollable.scrollTop;
+                // const lastElementOffset = lastElement.offsetTop;
+                // const previousScrollTop = scrollable.scrollTop;
                 await this.loadPage();
                 //load pos
-                const newLastElementOffset = lastElement.offsetTop;
-                scrollable.scrollTop = previousScrollTop + (newLastElementOffset - lastElementOffset);
+                // const newLastElementOffset = lastElement.offsetTop;
+                // scrollable.scrollTop = previousScrollTop + (newLastElementOffset - lastElementOffset);
                 //allow more load events
                 this.bottomReached = false;
             }
