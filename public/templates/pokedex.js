@@ -43,6 +43,7 @@ function initPokedex(params, routeData) {
         dexSearchInput;
         bottomReached = false;
         totalPokemonCount = 0;
+        loadedPages = [];
         gridDimensions;
         constructor(containerId, spacerId, mainSelector, searchInputId) {
             this.container = document.getElementById(containerId);
@@ -58,6 +59,11 @@ function initPokedex(params, routeData) {
             this.gridDimensions = this.calculateGridHeight();
             await this.loadPage();
             this.setupEventListeners();
+            // const scrollPosition = sessionStorage.getItem("scrollPosition");
+            // if (scrollPosition) {
+            //     this.main.scrollTop = parseInt(scrollPosition);
+            //     console.warn("scrolling to", scrollPosition);
+            // }
         }
         async loadPage(reset = false) {
             let result;
@@ -68,6 +74,7 @@ function initPokedex(params, routeData) {
                 result = await repo.getAllPokemon(this.pageNumber, this.pageSize);
             }
             this.renderPokemon(result, reset);
+            this.loadedPages.push(this.pageNumber);
         }
         renderPokemon(pokemonArray, reset = false) {
             if (reset) {
@@ -118,7 +125,8 @@ function initPokedex(params, routeData) {
             return {
                 columns: adjustedNumColumns,
                 rows: numRows,
-                totalHeight: totalHeight
+                totalHeight: totalHeight,
+                gap: gapInPixels
             };
         }
         //for discord style "filling the space in" lazy loading
@@ -147,6 +155,27 @@ function initPokedex(params, routeData) {
             this.pageNumber = 1;
             await this.loadPage(true);
         }
+        calculatePageToLoad(scrollPos = 0) {
+            //derranged code attempting a minecraft chunk style grid loading system
+            const { rows, gap, columns } = this.gridDimensions;
+            const rowHeight = 180 + gap;
+            const rowNumber = Math.floor(scrollPos / rowHeight);
+            const rowsPerPage = this.pageSize / columns;
+            const fullRowsPerPage = Math.floor(rowsPerPage);
+            const extraCellsPerPage = this.pageSize % columns;
+            const page = rowNumber / rowsPerPage;
+            const pageNumber = Math.ceil(page);
+            console.log(pageNumber, page);
+            const itemsBefore = (pageNumber - 1) * this.pageSize;
+            console.warn(itemsBefore);
+            const remainder = itemsBefore % columns;
+            console.warn(remainder);
+            //the cell the page will start on 
+            const startRow = Math.floor(itemsBefore / columns);
+            const startColumn = remainder;
+            console.warn("Page will start on:", startRow, startColumn);
+            return pageNumber;
+        }
         async onScroll() {
             if (this.bottomReached)
                 return;
@@ -164,10 +193,8 @@ function initPokedex(params, routeData) {
                 this.pageNumber++;
                 this.bottomReached = true;
                 //save pos
-                const lastElement = scrollable.querySelector('.card:last-child');
-                //if null last element, don't bother
-                if (!lastElement)
-                    return;
+                const lastPosition = scrollable.scrollTop;
+                const pageNumber = this.calculatePageToLoad(lastPosition);
                 // const lastElementOffset = lastElement.offsetTop;
                 // const previousScrollTop = scrollable.scrollTop;
                 await this.loadPage();

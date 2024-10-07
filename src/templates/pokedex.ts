@@ -29,7 +29,13 @@ export default function initPokedex(
         private dexSearchInput: HTMLInputElement;
         private bottomReached: boolean = false;
         private totalPokemonCount: number = 0;
-        private gridDimensions: { columns: number, rows: number, totalHeight: number };
+        private loadedPages: number[] = [];
+        private gridDimensions: { 
+            columns: number, 
+            rows: number, 
+            totalHeight: number,
+            gap: number
+        };
 
         constructor(containerId: string, spacerId: string, mainSelector: string, searchInputId: string) {
             this.container = document.getElementById(containerId);
@@ -47,6 +53,11 @@ export default function initPokedex(
             this.gridDimensions = this.calculateGridHeight();
             await this.loadPage();
             this.setupEventListeners();
+            // const scrollPosition = sessionStorage.getItem("scrollPosition");
+            // if (scrollPosition) {
+            //     this.main.scrollTop = parseInt(scrollPosition);
+            //     console.warn("scrolling to", scrollPosition);
+            // }
         }
 
         private async loadPage(reset: boolean = false) {
@@ -58,6 +69,7 @@ export default function initPokedex(
             }
 
             this.renderPokemon(result, reset);
+            this.loadedPages.push(this.pageNumber);
         }
 
         private renderPokemon(pokemonArray: Pokemon[], reset: boolean = false): void {
@@ -118,7 +130,8 @@ export default function initPokedex(
             return {
                 columns: adjustedNumColumns,
                 rows: numRows,
-                totalHeight: totalHeight
+                totalHeight: totalHeight,
+                gap: gapInPixels
             };
         }
 
@@ -154,6 +167,35 @@ export default function initPokedex(
             await this.loadPage(true);
         }
 
+        private calculatePageToLoad(scrollPos: number = 0): number {
+            //derranged code attempting a minecraft chunk style grid loading system
+            const { rows, gap, columns } = this.gridDimensions;
+
+            const rowHeight = 180 + gap;
+            const rowNumber = Math.floor(scrollPos / rowHeight);
+            const rowsPerPage = this.pageSize / columns;
+            const fullRowsPerPage = Math.floor(rowsPerPage);
+            const extraCellsPerPage = this.pageSize % columns;
+
+            const page = rowNumber / rowsPerPage
+            const pageNumber = Math.ceil(page);
+            console.log(pageNumber, page);
+
+            const itemsBefore = (pageNumber - 1) * this.pageSize
+            console.warn(itemsBefore);
+
+            const remainder = itemsBefore % columns;
+            console.warn(remainder);
+
+            //the cell the page will start on 
+            const startRow = Math.floor(itemsBefore / columns);
+            const startColumn = remainder;
+            console.warn("Page will start on:", startRow, startColumn);
+
+            return pageNumber;
+
+        }
+
         private async onScroll() {
             if (this.bottomReached) return;
 
@@ -175,10 +217,8 @@ export default function initPokedex(
                 this.bottomReached = true;
 
                 //save pos
-                const lastElement = scrollable.querySelector('.card:last-child') as HTMLElement;
-
-                //if null last element, don't bother
-                if (!lastElement) return;
+                const lastPosition = scrollable.scrollTop;
+                const pageNumber = this.calculatePageToLoad(lastPosition);
 
                 // const lastElementOffset = lastElement.offsetTop;
                 // const previousScrollTop = scrollable.scrollTop;
@@ -197,5 +237,6 @@ export default function initPokedex(
 
 
     const pokemonLoader = new PokemonLoader('container', 'spacer', 'main', 'dex-search');
+
 
 }

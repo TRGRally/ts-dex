@@ -22,6 +22,11 @@ export const routes = {
         template: "/templates/pokemon.html",
         script: initPokemon,
         resolve: async (params: { id: string }) => {
+            console.log("pokedex/:id");
+            //might use later
+            const main = document.querySelector("main");
+            sessionStorage.setItem("scrollPosition", main.scrollTop.toString());
+
             const formID = params.id;
             console.log(formID);
             const pokemon = repo.getPokemonById(formID.toUpperCase());
