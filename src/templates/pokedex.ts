@@ -3,6 +3,7 @@ import * as repo from '../util/repository';
 import * as sidebar from '../util/sidebar';
 import { PAGE_CONTAINER, BODY } from '../util/page-elements';
 import { Pokemon } from '../model/pokemon';
+import { Router } from '../router';
 
 
 export default function initPokedex(
@@ -10,7 +11,7 @@ export default function initPokedex(
         [key: string]: string
     },
     routeData: {
-        [key: string]: string
+        [key: string]: any
     }
 ): void {
     console.log("pokedex");
@@ -51,7 +52,7 @@ export default function initPokedex(
         private async init() {
             this.totalPokemonCount = await repo.getTotalPokemonCount();
             this.gridDimensions = this.calculateGridHeight();
-            await this.loadPage();
+            await this.loadPage(true);
             this.setupEventListeners();
             // const scrollPosition = sessionStorage.getItem("scrollPosition");
             // if (scrollPosition) {
@@ -67,15 +68,18 @@ export default function initPokedex(
             } else {
                 result = await repo.getAllPokemon(this.pageNumber, this.pageSize);
             }
-
+            console.warn(result);
             this.renderPokemon(result, reset);
             this.loadedPages.push(this.pageNumber);
         }
 
         private renderPokemon(pokemonArray: Pokemon[], reset: boolean = false): void {
             if (reset) {
+                console.warn("resetting pokemon grid");
                 this.container.innerHTML = "";
             }
+
+            console.warn("rendering pokemon");
 
             pokemonArray.forEach((pokemon) => {
                 const pokemonCard = PokemonCard(pokemon);
@@ -139,9 +143,12 @@ export default function initPokedex(
         //for discord style "filling the space in" lazy loading
         private adjustSpacer(): void {
 
+            if (this.isSearched) return;
+
             const totalHeight = this.gridDimensions.totalHeight;
-            const lastCard = this.container.querySelector('.card:last-child') as HTMLElement;
-            const lastCardRect = lastCard.getBoundingClientRect();
+            const lastCard: HTMLElement | null = this.container.querySelector('.card:last-child');
+
+            const lastCardRect = lastCard?.getBoundingClientRect() || { bottom: 0 };
             //get this in terms of its position in the container
             const lastCardBottom = lastCardRect.bottom - this.container.getBoundingClientRect().top;
 
@@ -161,9 +168,15 @@ export default function initPokedex(
             });
         }
 
+        public setSearchTerm(searchTerm: string) {
+            this.dexSearchInput.value = searchTerm;
+            this.onSearchInput();
+        }
+
         private async onSearchInput() {
             this.isSearched = this.dexSearchInput.value.length > 0;
             this.pageNumber = 1;
+            Router.updateQueryParams(this.isSearched ? { search: this.dexSearchInput.value } : null);
             await this.loadPage(true);
         }
 
@@ -235,8 +248,11 @@ export default function initPokedex(
         }
     }
 
+    const searchTerm: string = routeData.queryParams?.search || "";
 
     const pokemonLoader = new PokemonLoader('container', 'spacer', 'main', 'dex-search');
+    pokemonLoader.setSearchTerm(searchTerm);
+
 
 
 }

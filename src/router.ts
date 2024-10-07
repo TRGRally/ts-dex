@@ -127,6 +127,7 @@ export class Router {
 
     public async handleLocation(): Promise<void> {
         const path = window.location.pathname;
+        const searchParams = new URLSearchParams(window.location.search);
         const route = this.matchRoute(path);
 
         if (!route) {
@@ -134,10 +135,19 @@ export class Router {
             return;
         }
 
+        const queryParams: { [key: string]: string } = {};
+        searchParams.forEach((value, key) => {
+            queryParams[key] = value;
+        });
+
+        //queryParams go into routeData
+        this.routeData.queryParams = queryParams;
+
         //run prefetch if specified
         if (route.resolve) {
             try {
-                this.routeData = await route.resolve(this.params);
+                const resolvedData = await route.resolve(this.params);
+                this.routeData = { ...this.routeData, ...resolvedData };
             } catch (error) {
                 console.error("Error resolving data for route:", path, error);
                 this.load404();
@@ -176,6 +186,43 @@ export class Router {
     public async navigateTo(path: string): Promise<void> {
         window.history.pushState({}, "", path);
         await this.handleLocation();
+    }
+
+    public static async updateQueryParams(queryParams?: { [key: string]: string }): Promise<void> {
+
+        const windowHasQueryParams = window.location.search.length > 0;
+        
+        //no query params is treated as a reset, pushed to history
+        if (!queryParams) {
+            if (windowHasQueryParams) {
+                const path = window.location.pathname;
+                console.log("pushState", path);
+                window.history.pushState({}, "", path);
+            } else {
+                //unless already reset then do nothing to avoid duplicates
+                return;
+            }
+        }
+
+        const searchParams = new URLSearchParams();
+        for (let key in queryParams) {
+            searchParams.set(key, queryParams[key]);
+        }
+
+        //if requesting identical query params, do nothing to avoid duplicates
+        if (window.location.search === searchParams.toString()) {
+            return;
+        }
+
+        //if the window doesnt have any query params already, we push the state, otherwise replace to keep history clean
+        const path = window.location.pathname + "?" + searchParams.toString();
+        if (windowHasQueryParams) {
+            console.log("replaceState", path);
+            window.history.replaceState({}, "", path);
+        } else {
+            console.log("pushState", path);
+            window.history.pushState({}, "", path);
+        }
     }
 
     private load404(): void {
