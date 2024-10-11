@@ -3,6 +3,7 @@ import * as sidebar from "./util/sidebar";
 import initPokedex from "./templates/pokedex";
 import initPokemon from "./templates/pokemon";
 import initEvents from "./templates/events";
+import initTypes from "./templates/types";
 
 export const routes = {
     "/": {
@@ -37,9 +38,13 @@ export const routes = {
     },
     "/types": {
         template: "/templates/types.html",
-        script: async () => {
+        script: initTypes,
+        resolve: async () => {
             console.log("types");
-            sidebar.selectTypes();
+            const types = await repo.getAllTypes();
+            return {
+                types: types
+            }
         }
     },
     "/battle": {

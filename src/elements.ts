@@ -1,5 +1,6 @@
 import { Raid } from "./model/events";
 import { Evolution, Pokemon, PokemonMove } from "./model/pokemon";
+import { PokemonType } from "./model/type";
 import * as repo from "./util/repository";
 
 export function PokemonCard(pokemon: Pokemon): HTMLElement {
@@ -232,4 +233,19 @@ export function RaidCard(raid: Raid): HTMLElement {
     raidCard.setAttribute('href', `/raids/${raid.pokemon.formId.toLowerCase()}`);
 
     return raidCard;
+}
+
+
+
+export function TypeCard(type: PokemonType): HTMLElement {
+    const typeCard = document.createElement('a');
+    typeCard.classList.add('type-card');
+    typeCard.innerHTML = `
+        <div class="icon ${type.name.toLowerCase()}">
+            <img src="${repo.getTypeIconURL(type.name)}" alt="${type.name}"/>
+        </div>
+        <div class="card-title"><span>${type.name}</span></div>
+    `;
+    typeCard.setAttribute('href', `/types/${type.name.toLowerCase()}`);
+    return typeCard;
 }

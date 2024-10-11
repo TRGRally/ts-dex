@@ -614,3 +614,29 @@
     mix-blend-mode: darken;
 }
 
+.types-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+
+}
+
+.type-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+
+    .icon {
+        margin: 0.5rem;
+    }
+
+    .card-title {
+        font-size: 16px;
+        font-weight: 400;
+        color: var(--text1);
+    }
+}
+

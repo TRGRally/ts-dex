@@ -30,6 +30,7 @@ exports.PokemonMoveCard = PokemonMoveCard;
 exports.PokemonMoveset = PokemonMoveset;
 exports.PokemonShowcase = PokemonShowcase;
 exports.RaidCard = RaidCard;
+exports.TypeCard = TypeCard;
 const repo = __importStar(require("./util/repository"));
 function PokemonCard(pokemon) {
     //
@@ -218,5 +219,17 @@ function RaidCard(raid) {
     `;
     raidCard.setAttribute('href', `/raids/${raid.pokemon.formId.toLowerCase()}`);
     return raidCard;
+}
+function TypeCard(type) {
+    const typeCard = document.createElement('a');
+    typeCard.classList.add('type-card');
+    typeCard.innerHTML = `
+        <div class="icon ${type.name.toLowerCase()}">
+            <img src="${repo.getTypeIconURL(type.name)}" alt="${type.name}"/>
+        </div>
+        <div class="card-title"><span>${type.name}</span></div>
+    `;
+    typeCard.setAttribute('href', `/types/${type.name.toLowerCase()}`);
+    return typeCard;
 }
 //# sourceMappingURL=elements.js.map

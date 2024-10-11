@@ -32,6 +32,7 @@ const sidebar = __importStar(require("./util/sidebar"));
 const pokedex_1 = __importDefault(require("./templates/pokedex"));
 const pokemon_1 = __importDefault(require("./templates/pokemon"));
 const events_1 = __importDefault(require("./templates/events"));
+const types_1 = __importDefault(require("./templates/types"));
 exports.routes = {
     "/": {
         template: "/templates/pokedex.html",
@@ -62,9 +63,13 @@ exports.routes = {
     },
     "/types": {
         template: "/templates/types.html",
-        script: async () => {
+        script: types_1.default,
+        resolve: async () => {
             console.log("types");
-            sidebar.selectTypes();
+            const types = await repo.getAllTypes();
+            return {
+                types: types
+            };
         }
     },
     "/battle": {

@@ -12,6 +12,7 @@ exports.getAllPokemon = getAllPokemon;
 exports.getPokemonById = getPokemonById;
 exports.getPokemonByRegion = getPokemonByRegion;
 exports.searchPokemonByName = searchPokemonByName;
+exports.getAllTypes = getAllTypes;
 exports.isDBEmpty = isDBEmpty;
 exports.isDBStale = isDBStale;
 exports.getTypeBackground = getTypeBackground;
@@ -573,6 +574,25 @@ function searchPokemonByName(rawQuery, page, pageSize) {
                     console.log("Request time:", queryDuration);
                     resolve(sortedPokemon);
                 }
+            };
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+//no pagination (18 elements) fight me
+function getAllTypes() {
+    return new Promise((resolve, reject) => {
+        openDB().then((db) => {
+            const transaction = db.transaction('types', 'readonly');
+            const typeStore = transaction.objectStore('types');
+            const request = typeStore.getAll();
+            request.onerror = (event) => {
+                console.error('Request error:', event);
+                reject(event);
+            };
+            request.onsuccess = (event) => {
+                resolve(request.result);
             };
         }).catch((error) => {
             reject(error);

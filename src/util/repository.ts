@@ -692,6 +692,26 @@ export function searchPokemonByName(rawQuery: string, page: number, pageSize: nu
 
 }
 
+//no pagination (18 elements) fight me
+export function getAllTypes() {
+    return new Promise((resolve, reject) => {
+        openDB().then((db) => {
+            const transaction = db.transaction('types', 'readonly');
+            const typeStore = transaction.objectStore('types');
+            const request = typeStore.getAll();
+            request.onerror = (event) => {
+                console.error('Request error:', event);
+                reject(event);
+            };
+            request.onsuccess = (event) => {
+                resolve(request.result);
+            };
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+
 export function isDBEmpty(): Promise<boolean> {
     return new Promise((resolve, reject) => {
         openDB().then((db) => {
