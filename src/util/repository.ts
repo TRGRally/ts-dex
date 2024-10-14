@@ -730,7 +730,7 @@ export function isDBEmpty(): Promise<boolean> {
                     resolve(request.result === 0);
                 };
             } catch (error) {
-                console.error('Transaction error:', error);
+                console.warn('Transaction error:', error);
                 resolve(true); // Resolve as true if the object store does not exist
             }
         }).catch((error) => {
