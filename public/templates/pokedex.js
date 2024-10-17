@@ -83,7 +83,12 @@ function initPokedex(params, routeData) {
                 console.warn("resetting pokemon grid");
                 this.container.innerHTML = "";
             }
+            if (pokemonArray.length === 0) {
+                document.querySelector('#no-results')?.classList.remove('hidden');
+                return;
+            }
             console.warn("rendering pokemon");
+            document.querySelector('#no-results')?.classList.add('hidden');
             pokemonArray.forEach((pokemon) => {
                 const pokemonCard = (0, elements_1.PokemonCard)(pokemon);
                 this.container.appendChild(pokemonCard);
@@ -121,7 +126,7 @@ function initPokedex(params, routeData) {
             const numColumns = Math.floor((containerWidth + gapInPixels) / (columnWidth + gapInPixels)) || 1;
             const adjustedNumColumns = numColumns > 0 ? numColumns : 1;
             const numRows = Math.ceil(this.totalPokemonCount / adjustedNumColumns);
-            // Calculate the total height
+            //calculate the total height
             const totalHeight = numRows * rowHeight + (numRows - 1) * gapInPixels + paddingBottomInPixels;
             console.warn("totalHeight", totalHeight);
             console.warn("numColumns", numColumns);
