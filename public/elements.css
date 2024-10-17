@@ -1,3 +1,14 @@
+#no-results {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    color: var(--text-heading);
+}
+
+
 .card {
     position: relative;
     display: flex;
@@ -255,6 +266,10 @@
 
     backdrop-filter: var(--color-blur);
 
+    &:hover {
+        background-color: color-mix(in srgb, var(--bg2), transparent 60%);
+    }
+
 }
 
 .sort-icon.active,
@@ -297,7 +312,7 @@
         }
 
         &:hover {
-            background-color: var(--bg2);
+            background-color: color-mix(in oklab, var(--bg1), transparent 75%);
         }
     }
 

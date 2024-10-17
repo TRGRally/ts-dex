@@ -50,13 +50,14 @@ html {
 }
 
 *::-webkit-scrollbar-thumb {
-    background-color: var(--text2);
+    background-color: color-mix(in oklab, var(--bg1), transparent 75%);
     border-radius: 10px;
     border: 3px solid transparent;
+    min-height: 40px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-    background-color: var(--primary);
+    background-color: color-mix(in oklab, var(--bg1), transparent 50%);
 }
 
 
@@ -321,7 +322,7 @@ nav {
 
 
         &.active {
-            background-color: color-mix(in srgb, var(--bg3), transparent 60%);
+            background-color: color-mix(in srgb, var(--bg3), transparent 75%);
             color: var(--text-heading);
 
             .nav-link {
@@ -400,6 +401,10 @@ header {
 
 .muted {
     opacity: 0.25;
+}
+
+.hidden {
+    display: none !important;
 }
 
 @media (max-width: 579px) {

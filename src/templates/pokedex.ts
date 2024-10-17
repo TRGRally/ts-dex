@@ -79,7 +79,13 @@ export default function initPokedex(
                 this.container.innerHTML = "";
             }
 
+            if (pokemonArray.length === 0) {
+                document.querySelector('#no-results')?.classList.remove('hidden');
+                return;
+            }
+
             console.warn("rendering pokemon");
+            document.querySelector('#no-results')?.classList.add('hidden');
 
             pokemonArray.forEach((pokemon) => {
                 const pokemonCard = PokemonCard(pokemon);
@@ -126,7 +132,7 @@ export default function initPokedex(
             const adjustedNumColumns = numColumns > 0 ? numColumns : 1;
             const numRows = Math.ceil(this.totalPokemonCount / adjustedNumColumns);
 
-            // Calculate the total height
+            //calculate the total height
             const totalHeight = numRows * rowHeight + (numRows - 1) * gapInPixels + paddingBottomInPixels;
             console.warn("totalHeight", totalHeight);
             console.warn("numColumns", numColumns);
