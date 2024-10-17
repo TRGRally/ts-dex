@@ -791,7 +791,7 @@ export const typeBackgroundColors = {
     POKEMON_TYPE_FAIRY: "#956ae8",
     POKEMON_TYPE_FIGHTING: "#877150",
     POKEMON_TYPE_FLYING: "#5da0f0",
-    POKEMON_TYPE_GHOST: "##003d66",
+    POKEMON_TYPE_GHOST: "#013d67",
     POKEMON_TYPE_GRASS: "#a3d043",
     POKEMON_TYPE_GROUND: "#c2996a",
     POKEMON_TYPE_ICE: "#3c6c8a",
