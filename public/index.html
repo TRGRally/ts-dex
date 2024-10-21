@@ -163,7 +163,7 @@
             align-items: center;
             flex-direction: column;
             opacity: 0.75;
-            gap: 2rem;
+            gap: 3rem;
             font-size: 1.5rem;
             margin-top: 30vh;
             max-width: 90%;
@@ -176,51 +176,71 @@
 
 <body>
     <nav>
-        <a href="/" class="logo-landscape">
-            <img draggable="false" src="/assets/logo.png" alt="logo">
-            <div class="logo-text">
-                <span class="text-brand">TS Dex</span>
-                <span class="text-sub">strangely: typed</span>
-            </div>
-        </a>
-        <a href="/" id="pokedex-nav" class="nav-item">
-            <span class="material-symbols-rounded">
-                database
-            </span>
-            <div class="nav-link">Pokedex</div>
-        </a>
-        <a href="/events" id="events-nav" class="nav-item">
-            <span class="material-symbols-rounded">
-                event
-            </span>
-            <div class="nav-link">Events</div>
-        </a>
-        <a href="/types" id="types-nav" class="nav-item">
-            <span class="material-symbols-rounded">
-                offline_bolt
-            </span>
-            <div class="nav-link">Types</div>
-        </a>
-        <a href="/battle" id="battle-nav" class="nav-item">
-            <span class="material-symbols-rounded">
-                swords
-            </span>
-            <div class="nav-link">Battle</div>
-        </a>
+        <div class="nav-isolated">
+            <a href="/" class="logo-landscape">
+                <!-- <svg viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                    <path id="Subtract" fill-rule="evenodd" clip-rule="evenodd" d="M42 22.5H30.8354C30.1116 27.3113 25.9602 31 20.9471 31C15.9341 31 11.7826 27.3113 11.0589 22.5H0C0.771056 33.3979 9.87844 42 21 42C32.1216 42 41.2289 33.3979 42 22.5ZM42 19.5H30.8354C30.1116 14.6887 25.9602 11 20.9471 11C15.9341 11 11.7826 14.6887 11.0589 19.5H8.05372e-09C0.771056 8.60209 9.87844 0 21 0C32.1216 0 41.2289 8.60209 42 19.5ZM14.0893 22.4107C14.0954 22.4406 14.1017 22.4703 14.1082 22.5C14.7949 25.6452 17.596 28 20.9471 28C24.2982 28 27.0994 25.6452 27.786 22.5C27.8915 22.0168 27.9471 21.5149 27.9471 21C27.9471 20.5168 27.8982 20.0449 27.8049 19.5893C27.7988 19.5594 27.7925 19.5297 27.786 19.5C27.0994 16.3548 24.2982 14 20.9471 14C17.596 14 14.7949 16.3548 14.1082 19.5C14.0027 19.9832 13.9471 20.4851 13.9471 21C13.9471 21.4832 13.9961 21.9551 14.0893 22.4107Z" fill="white"/>
+                    </g>
+                </svg> -->
 
-        <footer>
-            <a class="link" target="blank" href="https://github.com/TRGRally/ts-dex"><span
-                    class="material-symbols-rounded">link</span><span class="text">GitHub</span></a>
-        </footer>
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g style="mix-blend-mode:multiply">
+                    <path d="M45 24C45 35.598 35.598 45 24 45C12.402 45 3 35.598 3 24C3 12.402 12.402 3 24 3C35.598 3 45 12.402 45 24Z" fill="#858585" fill-opacity="0"/>
+                    <path d="M24 46.5C36.4264 46.5 46.5 36.4264 46.5 24C46.5 11.5736 36.4264 1.5 24 1.5C11.5736 1.5 1.5 11.5736 1.5 24C1.5 36.4264 11.5736 46.5 24 46.5Z" stroke="black" stroke-opacity="0" stroke-width="0"/>
+                    </g>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M4.07451 25.5C3.49402 25.5 3.03332 25.9931 3.10452 26.5692C3.33625 28.4443 3.82111 30.2836 4.54898 32.0364C5.60703 34.5842 7.15784 36.8992 9.11287 38.8492C11.0679 40.7993 13.3888 42.3461 15.9432 43.4015C18.4976 44.4568 21.2353 45 24.0001 45C26.765 45 29.5027 44.4568 32.0571 43.4015C34.6114 42.3461 36.9324 40.7993 38.8874 38.8492C40.8424 36.8992 42.3932 34.5842 43.4513 32.0364C44.1792 30.2836 44.664 28.4443 44.8958 26.5692C44.967 25.9931 44.5063 25.5 43.9258 25.5H34.7491C34.2542 25.5 33.8392 25.8637 33.7236 26.3449C32.6683 30.7364 28.7153 34 24 34C19.2847 34 15.3317 30.7364 14.2764 26.3449C14.1608 25.8637 13.7458 25.5 13.2509 25.5H4.07451ZM17.0704 24.9967C16.9925 24.4499 17.4477 24 18 24L24.0001 24L30 24C30.5523 24 31.0075 24.4499 30.9296 24.9967C30.9054 25.1665 30.8751 25.3343 30.8389 25.5C30.1522 28.6452 27.3511 31 24 31C20.6489 31 17.8478 28.6452 17.1611 25.5C17.1546 25.4703 17.1483 25.4406 17.1422 25.4107C17.1143 25.2741 17.0903 25.1361 17.0704 24.9967Z" fill="white"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M30 24C30.5523 24 31.0075 23.5501 30.9296 23.0033C30.9097 22.8639 30.8857 22.7259 30.8578 22.5893C30.8517 22.5594 30.8454 22.5297 30.8389 22.5C30.1522 19.3548 27.3511 17 24 17C20.6489 17 17.8478 19.3548 17.1611 22.5C17.1249 22.6657 17.0946 22.8335 17.0704 23.0033C16.9925 23.5501 17.4477 24 18 24H24.0001H30ZM43.4513 15.9636C44.1792 17.7164 44.664 19.5557 44.8958 21.4308C44.967 22.0069 44.5063 22.5 43.9258 22.5H34.7491C34.2542 22.5 33.8392 22.1363 33.7236 21.6551C32.6683 17.2636 28.7153 14 24 14C19.2847 14 15.3317 17.2636 14.2764 21.6551C14.1608 22.1363 13.7458 22.5 13.2509 22.5H4.07451C3.49402 22.5 3.03332 22.0069 3.10452 21.4308C3.33625 19.5557 3.82111 17.7164 4.54898 15.9636C5.60703 13.4158 7.15785 11.1008 9.11287 9.15076C11.0679 7.20073 13.3888 5.65388 15.9432 4.59853C18.4976 3.54318 21.2353 3 24.0001 3C26.765 3 29.5027 3.54318 32.0571 4.59853C34.6114 5.65388 36.9324 7.20073 38.8874 9.15076C40.8424 11.1008 42.3932 13.4158 43.4513 15.9636Z" fill="#FF0000"/>
+                    <circle cx="24" cy="24" r="7" fill="white" opacity="1"/>
+                </svg>
+
+
+                <div class="logo-text">
+                    <span class="text-brand">TS Dex</span>
+                    <span class="text-sub">strangely: typed</span>
+                </div>
+            </a>
+            <a href="/" id="pokedex-nav" class="nav-item">
+                <span class="material-symbols-rounded">
+                    database
+                </span>
+                <div class="nav-link">Pokedex</div>
+            </a>
+            <a href="/events" id="events-nav" class="nav-item">
+                <span class="material-symbols-rounded">
+                    event
+                </span>
+                <div class="nav-link">Events</div>
+            </a>
+            <a href="/types" id="types-nav" class="nav-item">
+                <span class="material-symbols-rounded">
+                    offline_bolt
+                </span>
+                <div class="nav-link">Types</div>
+            </a>
+            <a href="/battle" id="battle-nav" class="nav-item">
+                <span class="material-symbols-rounded">
+                    swords
+                </span>
+                <div class="nav-link">Battle</div>
+            </a>
+    
+            <footer>
+                <a class="link" target="blank" href="https://github.com/TRGRally/ts-dex"><span
+                        class="material-symbols-rounded">link</span><span class="text">GitHub</span></a>
+            </footer>
+        </div>
     </nav>
 
     <main>
 
         <div id="db-loading">
 
-            <svg xmlns="http://www.w3.org/2000/svg" height="80px" viewBox="0 -960 960 960" width="80px" fill="#a7a7a7">
-                <path d="M253-158.52q-88.63 0-150.82-61.83Q40-282.18 40-370.67q0-79.78 50.36-138.73 50.36-58.95 126.9-70.93 15.87-83.02 81.14-147.39 65.27-64.37 150.51-64.37 24.38 0 43.45 14.08 19.07 14.08 19.07 37.01v294.52l82.07-82.54 42.91 42.91L481-330.46 326.09-486.11 369-529.02l82.07 82.54v-286.39q-84.83 13.2-132.39 75.73-47.55 62.53-47.55 137.79h-21.02q-59.74 0-102.36 41.86t-42.62 105.7q0 64.07 43.98 105.86 43.98 41.78 103.14 41.78h497.1q43.48 0 74.75-31.14 31.27-31.13 31.27-75.3 0-43.66-31.44-74.71-31.44-31.05-75.43-31.05h-63.43v-84.67q0-68.16-32.82-116.55t-84.32-77.17v-70.04q81.96 28.5 130.93 99.99 48.97 71.49 50.9 159.46v25.5q70.98-1.08 121.11 47.39Q921-403.96 921-329.54q0 70.31-50.73 120.66-50.73 50.36-120.77 50.36H253Zm227.5-351.33Z" />
-            </svg>
+            <svg height="100px" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                    <path id="Subtract" fill-rule="evenodd" clip-rule="evenodd" d="M42 22.5H30.8354C30.1116 27.3113 25.9602 31 20.9471 31C15.9341 31 11.7826 27.3113 11.0589 22.5H0C0.771056 33.3979 9.87844 42 21 42C32.1216 42 41.2289 33.3979 42 22.5ZM42 19.5H30.8354C30.1116 14.6887 25.9602 11 20.9471 11C15.9341 11 11.7826 14.6887 11.0589 19.5H8.05372e-09C0.771056 8.60209 9.87844 0 21 0C32.1216 0 41.2289 8.60209 42 19.5ZM14.0893 22.4107C14.0954 22.4406 14.1017 22.4703 14.1082 22.5C14.7949 25.6452 17.596 28 20.9471 28C24.2982 28 27.0994 25.6452 27.786 22.5C27.8915 22.0168 27.9471 21.5149 27.9471 21C27.9471 20.5168 27.8982 20.0449 27.8049 19.5893C27.7988 19.5594 27.7925 19.5297 27.786 19.5C27.0994 16.3548 24.2982 14 20.9471 14C17.596 14 14.7949 16.3548 14.1082 19.5C14.0027 19.9832 13.9471 20.4851 13.9471 21C13.9471 21.4832 13.9961 21.9551 14.0893 22.4107Z" fill="white"/>
+                    </g>
+                </svg>
 
             <div class="loading-text">
                 Fetching the newest data ;)
