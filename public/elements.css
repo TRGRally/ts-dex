@@ -56,6 +56,9 @@
         margin-top: auto;
         margin-bottom: auto;
         max-width: calc(100% - 1rem);
+        /* explicit width/height because theres so many of these */
+        width: 137px;
+        height: 137px;
         /* max-height: calc(100% - 4rem); */
     }
 
@@ -166,11 +169,18 @@
     margin-bottom: 0.5rem;
     color: var(--text-heading);
 
-    img {
-        height: 2.5rem;
+    svg {
+        height: 2.25rem;
         aspect-ratio: 1;
         margin-right: 0.5rem;
-        filter: brightness(1.25);
+        /* filter: brightness(1.25); */
+        transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        /* border-radius: 100%; */
+        &:hover {
+            transform: rotate(-15deg);
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+            /* box-shadow: 0 0 10px rgba(255,255,255, 0.25); */
+        }
     }
 
     .logo-text {

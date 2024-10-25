@@ -392,15 +392,14 @@ const indexedDB = window.indexedDB;
 
 export async function initDB(): Promise<void> {
     localStorage.setItem('lastUpdate', new Date().toISOString());
-    console.log('db refreshed');
+    console.log('db refreshing');
 
-    const typesData = await fetchTypeJson();
+    //better than waiting for types to fetch before fetching the giant pokemon list
+    const [typesData, pokemonData] = await Promise.all([fetchTypeJson(), fetchPokemonJson()]);
     const allTypesData = getTypesArray(typesData);
-
+    
     //temporary costume exclusion while i work out how they'll be handled
     const costumeFormIds = ['PIKACHU_DOCTOR', 'PIKACHU_FLYING_01', 'PIKACHU_FLYING_02', 'PIKACHU_TSHIRT_01', 'PIKACHU_TSHIRT_02', 'PIKACHU_FLYING_03', 'PIKACHU_FLYING_04', 'PIKACHU_FLYING_5TH_ANNIV', 'PIKACHU_FLYING_OKINAWA', 'PIKACHU_GOFEST_2024_MTIARA', 'PIKACHU_GOFEST_2024_STIARA', 'PIKACHU_GOTOUR_2024_A', 'PIKACHU_GOTOUR_2024_A_02', 'PIKACHU_GOTOUR_2024_B', 'PIKACHU_GOTOUR_2024_B_02', 'PIKACHU_HORIZONS', 'PIKACHU_JEJU', 'PIKACHU_KARIYUSHI', 'PIKACHU_POP_STAR', 'PIKACHU_ROCK_STAR', 'PIKACHU_SUMMER_2023_A', 'PIKACHU_SUMMER_2023_B', 'PIKACHU_SUMMER_2023_C', 'PIKACHU_SUMMER_2023_D', 'PIKACHU_SUMMER_2023_E', 'PIKACHU_TSHIRT_03', 'EEVEE_GOFEST_2024_MTIARA', 'EEVEE_GOFEST_2024_STIARA', 'ESPEON_GOFEST_2024_SSCARF', 'UMBREON_GOFEST_2024_MSCARF'];
-
-    const pokemonData = await fetchPokemonJson(); 
     const regionForms = extractRegionForms(pokemonData);
     const allPokemonData = pokemonData.concat(regionForms);
     const allPokemonArray = getPokemonArray(allPokemonData);
@@ -422,14 +421,22 @@ export async function initDB(): Promise<void> {
         allPokemonMap.set(pokemon.formId, pokemon);
     });
 
-    
+    console.log("populating db with web data");
 
     return new Promise((resolve, reject) => {
         const request = indexedDB.open('pokedex', 7);
+        console.log('requesting db open');
 
         request.onerror = (event) => {
             console.error('Database error:', event);
             reject(event);
+        };
+
+        request.onblocked = (event) => {
+            console.error('Database blocked:', event);
+            //trigger upgrade
+
+            window.location.reload();
         };
 
         request.onupgradeneeded = (event) => {
@@ -467,12 +474,29 @@ export async function initDB(): Promise<void> {
                 const typeStore = transaction.objectStore('types');
 
                 const allPokemonArray = Array.from(allPokemonMap.values());
-                allPokemonArray.forEach((pokemon) => {
-                    pokemonStore.put(pokemon);
+
+                //indexedDB doesnt really support bulk insert but awaiting all promises lets us treat it like it does
+                const pokemonPromises = allPokemonArray.map((pokemon) => {
+                    return new Promise<void>((resolve, reject) => {
+                        const request = pokemonStore.put(pokemon);
+                        request.onsuccess = () => resolve();
+                        request.onerror = (event) => reject(event);
+                    });
+                });
+                const typePromises = allTypesData.map((type) => {
+                    return new Promise<void>((resolve, reject) => {
+                        const request = typeStore.put(type);
+                        request.onsuccess = () => resolve();
+                        request.onerror = (event) => reject(event);
+                    });
                 });
 
-                allTypesData.forEach((type) => {
-                    typeStore.put(type);
+                Promise.all([...pokemonPromises, ...typePromises]).then(() => {
+                    console.warn('store populated');
+                    resolve();
+                }).catch((error) => {
+                    console.error('Transaction error:', error);
+                    reject(error);
                 });
 
                 transaction.oncomplete = () => {
@@ -516,6 +540,7 @@ export async function initDB(): Promise<void> {
             };
         };
     });
+ 
 }
 
 //private to ensure access through repository only
@@ -750,11 +775,11 @@ export function isDBStale() {
     const currentTime = new Date().getTime();
     const lastUpdateDate = new Date(lastUpdate).getTime();
     const timeSinceUpdate = currentTime - lastUpdateDate;
-    const oneHour = 1000 * 60 * 60;
+    const oneDay = 1000 * 60 * 60 * 24;
 
-    const isDbStale = timeSinceUpdate > oneHour;
+    const isDbStale = timeSinceUpdate > oneDay;
     console.log('Time since last update:', timeSinceUpdate);
-    console.log('Threshold for stale:', oneHour);
+    console.log('Threshold for stale:', oneDay);
     console.log('DB stale:', isDbStale);
 
     return isDbStale;

@@ -18,10 +18,8 @@ async function main() {
         await repo.initDB();
         console.log("DB refreshed");
         
-        //lol
-        // setTimeout(() => {
-        //     window.location.reload();
-        // }, 1000);
+
+
 
     } else {
         repo.getAllPokemon(1, 1400).then((pokemon) => {
