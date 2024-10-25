@@ -157,12 +157,39 @@
     <script type="module" src="/bundle.js"></script>
     <!-- inline style to stop loading pop-in -->
     <style>
+        .rotate-center {
+	        -webkit-animation: rotate-center 1s cubic-bezier(0.445, 0.050, 0.550, 0.950) infinite both;
+	                animation: rotate-center 1s cubic-bezier(0.445, 0.050, 0.550, 0.950) infinite both;
+        }
+
+        @-webkit-keyframes rotate-center {
+            0% {
+                -webkit-transform: rotate(0);
+                        transform: rotate(0);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                        transform: rotate(360deg);
+            }
+        }
+        @keyframes rotate-center {
+            0% {
+                -webkit-transform: rotate(0);
+                        transform: rotate(0);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                        transform: rotate(360deg);
+            }
+        }
+
+
         #db-loading {
             display: none;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            opacity: 0.75;
+            opacity: 0.9;
             gap: 3rem;
             font-size: 1.5rem;
             margin-top: 30vh;
@@ -170,6 +197,7 @@
             margin-inline: auto;
             text-wrap: balance;
             text-align: center;
+            color: white;
         }
     </style>
 </head>
@@ -236,7 +264,7 @@
 
         <div id="db-loading">
 
-            <svg height="100px" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg class="rotate-center" height="100px" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g>
                     <path id="Subtract" fill-rule="evenodd" clip-rule="evenodd" d="M42 22.5H30.8354C30.1116 27.3113 25.9602 31 20.9471 31C15.9341 31 11.7826 27.3113 11.0589 22.5H0C0.771056 33.3979 9.87844 42 21 42C32.1216 42 41.2289 33.3979 42 22.5ZM42 19.5H30.8354C30.1116 14.6887 25.9602 11 20.9471 11C15.9341 11 11.7826 14.6887 11.0589 19.5H8.05372e-09C0.771056 8.60209 9.87844 0 21 0C32.1216 0 41.2289 8.60209 42 19.5ZM14.0893 22.4107C14.0954 22.4406 14.1017 22.4703 14.1082 22.5C14.7949 25.6452 17.596 28 20.9471 28C24.2982 28 27.0994 25.6452 27.786 22.5C27.8915 22.0168 27.9471 21.5149 27.9471 21C27.9471 20.5168 27.8982 20.0449 27.8049 19.5893C27.7988 19.5594 27.7925 19.5297 27.786 19.5C27.0994 16.3548 24.2982 14 20.9471 14C17.596 14 14.7949 16.3548 14.1082 19.5C14.0027 19.9832 13.9471 20.4851 13.9471 21C13.9471 21.4832 13.9961 21.9551 14.0893 22.4107Z" fill="white"/>
                     </g>
