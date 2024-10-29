@@ -17,6 +17,7 @@
     ],
     "display": "standalone",
     "start_url": "/",
+    "background_color": "#2d2d2d",
     "screenshots": [
         {
             "src": "/assets/screenshots/screenshot-wide.png",
