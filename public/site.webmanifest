@@ -13,5 +13,20 @@
             "type": "image/png"
         }
     ],
-    "display": "standalone"
+    "display": "standalone",
+    "start_url": "/",
+    "screenshots": [
+        {
+            "src": "/assets/screenshots/screenshot-wide.png",
+            "sizes": "2560x1440",
+            "type": "image/png",
+            "form_factor": "wide"
+        },
+        {
+            "src": "/assets/screenshots/screenshot-narrow.png",
+            "sizes": "1442x3203",
+            "type": "image/png",
+            "form_factor": "narrow"
+        }
+    ]
 }
