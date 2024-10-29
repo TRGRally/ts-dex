@@ -435,8 +435,7 @@ export async function initDB(): Promise<void> {
         request.onblocked = (event) => {
             console.error('Database blocked:', event);
             //trigger upgrade
-
-            window.location.reload();
+            //idk how to do this yet but reloading wasnt good enough
         };
 
         request.onupgradeneeded = (event) => {

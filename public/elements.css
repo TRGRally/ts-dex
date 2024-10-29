@@ -6,6 +6,10 @@
     gap: 0.5rem;
     padding: 1rem;
     color: var(--text-heading);
+
+    .message {
+        font-size: 18px;
+    }
 }
 
 
