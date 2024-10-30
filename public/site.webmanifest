@@ -6,13 +6,13 @@
             "src": "/assets/favicon/android-chrome-192x192.png",
             "sizes": "192x192",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "any"
         },
         {
             "src": "/assets/favicon/android-chrome-512x512.png",
             "sizes": "512x512",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "any"
         }
     ],
     "display": "standalone",
@@ -21,7 +21,7 @@
     "screenshots": [
         {
             "src": "/assets/screenshots/screenshot-wide.png",
-            "sizes": "2560x1440",
+            "sizes": "2559x1439",
             "type": "image/png",
             "form_factor": "wide"
         },
