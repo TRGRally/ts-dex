@@ -9,9 +9,10 @@
 
     --text1: #d4d4d4;
     --text2: #d4d4d4aa;
-    --text-heading: #f0f0f0;
+    --text-heading: #ffffff;
 
-    --primary: #0089cf;
+    --primary: hsl(200, 100%, 50%);
+    --primary-shady: hsl(200, 100%, 40%);
 
     --success: #52c994;
     --error: #ff8071;
